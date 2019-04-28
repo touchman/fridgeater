@@ -3,5 +3,79 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-
+    <changeSet author="zhdanovich" id="CREATE_TABLES">
+        <createTable tableName="RECIPE">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="RECIPE_PK"/>
+            </column>
+            <column name="TYPE"
+                    type="ENUM ('PASTA', 'SALAD', 'BREAD', 'CURRY', 'VEGETABLE', 'SOUP', 'ROAST', 'STEW', 'PIZZA', 'SAUCE', 'DESSERT', 'DRINK', 'OTHER')"/>
+            <column name="ACTIVE" type="BOOLEAN" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="PRODUCT">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="RECIPE_PK"/>
+            </column>
+            <column name="ACTIVE" type="BOOLEAN" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="RECIPE_PRODUCT">
+            <column name="RECIPE_ID" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="RECIPE_FK" deleteCascade="true"
+                             referencedTableName="RECIPE" referencedColumnNames="ID"/>
+            </column>
+            <column name="PRODUCT_ID" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="PRODUCT_FK" deleteCascade="true"
+                             referencedTableName="PRODUCT" referencedColumnNames="ID"/>
+            </column>
+        </createTable>
+        <createIndex tableName="RECIPE_PRODUCT" indexName="RECIPE_INX">
+            <column name="RECIPE_ID"/>
+        </createIndex>
+        <createIndex tableName="RECIPE_PRODUCT" indexName="PRODUCT_INX">
+            <column name="PRODUCT_ID"/>
+        </createIndex>
+        <createTable tableName="LANGUAGE">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="LANG_PK"/>
+            </column>
+            <column name="CODE" type="VARCHAR(255)"/>
+        </createTable>
+        <insert tableName="LANGUAGE">
+            <column name="CODE">EN</column>
+        </insert>
+        <createTable tableName="PRODUCT_NAME">
+            <column name="PRODUCT_ID" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="PRODUCT_NAME_FK" deleteCascade="true"
+                             referencedTableName="PRODUCT" referencedColumnNames="ID"/>
+            </column>
+            <column name="LANG_ID" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="PRODUCT_LANG_FK" deleteCascade="true"
+                             referencedTableName="LANGUAGE" referencedColumnNames="ID"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="RECIPE_NAME">
+            <column name="RECIPE_ID" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="RECIPE_NAME_FK" deleteCascade="true"
+                             referencedTableName="RECIPE" referencedColumnNames="ID"/>
+            </column>
+            <column name="LANG_ID" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="RECIPE_LANG_FK" deleteCascade="true"
+                             referencedTableName="LANGUAGE" referencedColumnNames="ID"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="RECIPE"/>
+            <dropTable tableName="PRODUCT"/>
+            <dropTable tableName="RECIPE_PRODUCT"/>
+            <dropTable tableName="LANGUAGE"/>
+            <dropTable tableName="RECIPE_NAME"/>
+            <dropTable tableName="PRODUCT_NAME"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
