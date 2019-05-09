@@ -3,6 +3,8 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
     <changeSet author="zhdanovich" id="CREATE_TABLES">
         <createTable tableName="RECIPE">
             <column name="ID" type="BIGINT" autoIncrement="true">
@@ -77,5 +79,15 @@
             <dropTable tableName="RECIPE_NAME"/>
             <dropTable tableName="PRODUCT_NAME"/>
         </rollback>
+    </changeSet>
+    <changeSet id="addPKtoProductName" author="zhdanovich">
+        <addColumn tableName="PRODUCT_NAME">
+            <column name="ID" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="RECIPE_PK"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="addUniqueToLanguage" author="zhdanovich">
+        <addUniqueConstraint tableName="LANGUAGE" columnNames="CODE"/>
     </changeSet>
 </databaseChangeLog>

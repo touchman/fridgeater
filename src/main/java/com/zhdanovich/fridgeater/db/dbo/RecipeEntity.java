@@ -1,5 +1,6 @@
 package com.zhdanovich.fridgeater.db.dbo;
 
+import com.zhdanovich.fridgeater.db.dbo.data.RecipeTypeEnum;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,7 +15,8 @@ public class RecipeEntity {
     private int id;
 
     @Column(name = "TYPE")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private RecipeTypeEnum type;
 
     @Column(name = "ACTIVE")
     private boolean active;
