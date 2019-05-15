@@ -5,9 +5,13 @@ import com.zhdanovich.fridgeater.MockData;
 import com.zhdanovich.fridgeater.convertor.ProductConverter;
 import com.zhdanovich.fridgeater.db.dbo.LanguageEntity;
 import com.zhdanovich.fridgeater.db.dbo.ProductEntity;
+import com.zhdanovich.fridgeater.db.dbo.ProductNameEntity;
 import com.zhdanovich.fridgeater.db.dto.ProductToSaveDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.List;
 
 
 public class ProductConverterTest {
@@ -16,10 +20,7 @@ public class ProductConverterTest {
 
     @Test
     public void productToEntityTest() {
-        final ProductToSaveDTO dto = new ProductToSaveDTO();
-        dto.setName("cucumber");
-        dto.setLang("en");
-        dto.setActive(true);
+        final ProductToSaveDTO dto = MockData.Dto.productToSaveDTO();
 
         final LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setCode(dto.getLang());
@@ -33,12 +34,22 @@ public class ProductConverterTest {
 
     @Test
     public void productEntityToDto() {
-        final ProductEntity productEntity = MockData.productEntity();
-        final ProductToSaveDTO dto = converter.productEntityToDto(MockData.productEntity());
+        final ProductEntity productEntity = MockData.Entity.productEntity();
+        final List<ProductToSaveDTO> dtoList = converter.productEntityToDtoList(productEntity);
 
-        Assert.assertEquals(dto.getLang(), productEntity.getNameEntity().get(0).getLang().getCode());
-        Assert.assertEquals(dto.getName(), productEntity.getNameEntity().get(0).getName());
-        Assert.assertTrue(dto.isActive());
+        Assert.assertEquals(dtoList.size(), 2);
+        int countOfMatches = 0;
+        for (final ProductToSaveDTO productToSaveDTO : dtoList) {
+            Assert.assertEquals(productToSaveDTO.isActive(), productEntity.isActive());
+
+            for (final ProductNameEntity productNameEntity : productEntity.getNameEntity()) {
+                if (StringUtils.equalsIgnoreCase(productNameEntity.getName(), productToSaveDTO.getName())
+                        && StringUtils.equalsIgnoreCase(productNameEntity.getLang().getCode(), productToSaveDTO.getLang())) {
+                    countOfMatches++;
+                }
+            }
+        }
+        Assert.assertEquals(countOfMatches, productEntity.getNameEntity().size());
     }
 
 }

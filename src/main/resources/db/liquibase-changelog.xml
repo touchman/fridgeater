@@ -90,4 +90,15 @@
     <changeSet id="addUniqueToLanguage" author="zhdanovich">
         <addUniqueConstraint tableName="LANGUAGE" columnNames="CODE"/>
     </changeSet>
+    <changeSet id="addPKtoRecipeName" author="zhdanovich">
+        <addColumn tableName="RECIPE_NAME">
+            <column name="ID" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="RECIPE_PK"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="addUniqueToNameTables" author="zhdanovich">
+        <addUniqueConstraint tableName="PRODUCT_NAME" columnNames="LANG_ID,NAME"/>
+        <addUniqueConstraint tableName="RECIPE_NAME" columnNames="LANG_ID,NAME"/>
+    </changeSet>
 </databaseChangeLog>

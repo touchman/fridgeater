@@ -2,7 +2,6 @@ package com.zhdanovich.fridgeater.controller;
 
 import com.zhdanovich.fridgeater.db.dto.AllProductsDTO;
 import com.zhdanovich.fridgeater.db.dto.ProductToSaveDTO;
-import com.zhdanovich.fridgeater.db.dto.ProductsToGetDTO;
 import com.zhdanovich.fridgeater.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,7 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/getAllProducts", method = RequestMethod.POST)
-    public AllProductsDTO getAllProducts(@RequestBody final ProductsToGetDTO productsToGetDTO) {
-        return productService.getAllProducts(productsToGetDTO);
+    public AllProductsDTO getAllProducts() {
+        return productService.getAllProducts();
     }
 }
