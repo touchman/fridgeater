@@ -2,10 +2,9 @@ package com.zhdanovich.fridgeater.service;
 
 import com.zhdanovich.fridgeater.MockData;
 import com.zhdanovich.fridgeater.convertor.ProductConverter;
-import com.zhdanovich.fridgeater.db.dbo.ProductEntity;
-import com.zhdanovich.fridgeater.db.dto.AllProductsDTO;
-import com.zhdanovich.fridgeater.db.dto.ProductToSaveDTO;
-import com.zhdanovich.fridgeater.helper.LanguageHelper;
+import com.zhdanovich.fridgeater.dto.AllProductsDto;
+import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
+import com.zhdanovich.fridgeater.entity.ProductEntity;
 import com.zhdanovich.fridgeater.repository.ProductRepository;
 import com.zhdanovich.fridgeater.service.impl.ProductServiceImpl;
 import org.junit.Assert;
@@ -32,14 +31,14 @@ public class ProductServiceTest {
     private ProductRepository productRepository;
 
     @Mock
-    private LanguageHelper languageHelper;
+    private LanguageService languageService;
 
     @Spy
     private ProductConverter productConverter;
 
     @Test
     public void createProduct() {
-        final ProductToSaveDTO productToSaveDTO = MockData.Dto.productToSaveDTO();
+        final ProductToSaveDto productToSaveDTO = MockData.Dto.productToSaveDto("cucumber", "en");
 
         final ProductEntity productEntity = MockData.Entity.productEntity();
 
@@ -57,7 +56,7 @@ public class ProductServiceTest {
 
         doReturn(productEntities).when(productRepository).findAll();
 
-        final AllProductsDTO allProductsDTO = productService.getAllProducts();
+        final AllProductsDto allProductsDTO = productService.getAllProducts();
 
         Assert.assertEquals(2, allProductsDTO.getAllProducts().size());
         Assert.assertEquals(allProductsDTO.getAllProducts().get(0).getName(), productEntities.get(0).getNameEntity().get(0).getName());

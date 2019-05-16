@@ -1,11 +1,11 @@
 package com.zhdanovich.fridgeater;
 
-import com.zhdanovich.fridgeater.db.dbo.*;
-import com.zhdanovich.fridgeater.db.dbo.data.RecipeTypeEnum;
-import com.zhdanovich.fridgeater.db.dto.ProductToSaveDTO;
-import com.zhdanovich.fridgeater.db.dto.RecipeToSaveDTO;
+import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
+import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
+import com.zhdanovich.fridgeater.entity.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MockData {
@@ -14,80 +14,63 @@ public class MockData {
         public static ProductEntity productEntity() {
             final ProductEntity productEntity = new ProductEntity();
             productEntity.setActive(true);
-            productEntity.addName(productNameEntityEN());
-            productEntity.addName(productNameEntityRU());
+            productEntity.addName(productNameEntity("cucumber", "en"));
+            productEntity.addName(productNameEntity("огурец", "ru"));
 
             return productEntity;
         }
 
-        public static List<ProductNameEntity> productNameEntities() {
-            final List<ProductNameEntity> list = new ArrayList<>();
-            list.add(productNameEntityEN());
-            list.add(productNameEntityRU());
-            return list;
+        public static ProductEntity productEntity(final List<ProductNameEntity> productNameEntities) {
+            final ProductEntity productEntity = new ProductEntity();
+            productEntity.setActive(true);
+            productNameEntities.forEach(productEntity::addName);
+
+            return productEntity;
         }
 
-        public static ProductNameEntity productNameEntityEN() {
+        public static ProductNameEntity productNameEntity(final String name, final String lang) {
             final ProductNameEntity nameEntity = new ProductNameEntity();
-            nameEntity.setName("cucumber");
-            nameEntity.setLang(languageEntityEN());
+            nameEntity.setName(name);
+            nameEntity.setLang(languageEntity(lang));
 
             return nameEntity;
         }
 
-        public static ProductNameEntity productNameEntityRU() {
-            final ProductNameEntity nameEntity = new ProductNameEntity();
-            nameEntity.setName("огурец");
-            nameEntity.setLang(languageEntityRU());
-
-            return nameEntity;
-        }
-
-        public static LanguageEntity languageEntityEN() {
+        public static LanguageEntity languageEntity(final String code) {
             final LanguageEntity languageEntity = new LanguageEntity();
-            languageEntity.setCode("en");
-
-            return languageEntity;
-        }
-
-        public static LanguageEntity languageEntityRU() {
-            final LanguageEntity languageEntity = new LanguageEntity();
-            languageEntity.setCode("ru");
+            languageEntity.setCode(code);
 
             return languageEntity;
         }
 
         public static List<RecipeNameEntity> recipeNameEntities() {
             final List<RecipeNameEntity> recipeNameEntities = new ArrayList<>();
-            recipeNameEntities.add(recipeNameEntityEN());
-            recipeNameEntities.add(recipeNameEntityRU());
+            recipeNameEntities.add(recipeNameEntity("salad from cucumber and apple", "en"));
+            recipeNameEntities.add(recipeNameEntity("салат из огурца и яблока", "ru"));
 
             return recipeNameEntities;
         }
 
-        public static RecipeNameEntity recipeNameEntityEN() {
+        public static RecipeNameEntity recipeNameEntity(final String name, final String lang) {
             final RecipeNameEntity recipeNameEntity = new RecipeNameEntity();
-            recipeNameEntity.setLang(languageEntityEN());
-            recipeNameEntity.setName("salad from cucumbers");
-
-            return recipeNameEntity;
-        }
-
-        public static RecipeNameEntity recipeNameEntityRU() {
-            final RecipeNameEntity recipeNameEntity = new RecipeNameEntity();
-            recipeNameEntity.setLang(languageEntityRU());
-            recipeNameEntity.setName("салат из огурцов");
+            recipeNameEntity.setLang(languageEntity(lang));
+            recipeNameEntity.setName(name);
 
             return recipeNameEntity;
         }
 
         public static RecipeEntity recipeEntity() {
             final RecipeEntity recipeEntity = new RecipeEntity();
-            recipeEntity.addName(recipeNameEntityEN());
-            recipeEntity.addName(recipeNameEntityRU());
+            recipeEntity.addName(recipeNameEntity("salad from cucumber and apple", "en"));
+            recipeEntity.addName(recipeNameEntity("салат из огурца и яблока", "ru"));
             recipeEntity.setActive(true);
-            recipeEntity.setType(RecipeTypeEnum.SALAD);
-            recipeEntity.addProduct(productEntity());
+            recipeEntity.setType("SALAD");
+            recipeEntity.addProduct(productEntity(Arrays.asList(
+                    productNameEntity("cucumber", "en"),
+                    productNameEntity("огурец", "ru"))));
+            recipeEntity.addProduct(productEntity(Arrays.asList(
+                    productNameEntity("apple", "en"),
+                    productNameEntity("яблоко", "ru"))));
 
             return recipeEntity;
         }
@@ -95,21 +78,34 @@ public class MockData {
 
     public static class Dto {
 
-        public static ProductToSaveDTO productToSaveDTO() {
-            final ProductToSaveDTO dto = new ProductToSaveDTO();
-            dto.setName("cucumber");
-            dto.setLang("en");
+        public static ProductToSaveDto productToSaveDto(final String name, final String lang) {
+            final ProductToSaveDto dto = new ProductToSaveDto();
+            dto.setName(name);
+            dto.setLang(lang);
             dto.setActive(true);
             return dto;
         }
 
-        public static RecipeToSaveDTO recipeToSaveDTO() {
-            final RecipeToSaveDTO recipeToSaveDTO = new RecipeToSaveDTO();
-            recipeToSaveDTO.setName("salad from cucumber");
+        public static RecipeToSaveDto recipeToSaveDtoEN() {
+            final RecipeToSaveDto recipeToSaveDTO = new RecipeToSaveDto();
+            recipeToSaveDTO.setName("salad from cucumber and apple");
             recipeToSaveDTO.setLang("en");
-            recipeToSaveDTO.setType(RecipeTypeEnum.SALAD.name());
+            recipeToSaveDTO.setType("SALAD");
             recipeToSaveDTO.setActive(true);
-            recipeToSaveDTO.getProductList().add(productToSaveDTO());
+            recipeToSaveDTO.getProductList().add(productToSaveDto("cucumber", "en"));
+            recipeToSaveDTO.getProductList().add(productToSaveDto("apple", "en"));
+
+            return recipeToSaveDTO;
+        }
+
+        public static RecipeToSaveDto recipeToSaveDtoRU() {
+            final RecipeToSaveDto recipeToSaveDTO = new RecipeToSaveDto();
+            recipeToSaveDTO.setName("салат из огурца и яблока");
+            recipeToSaveDTO.setLang("ru");
+            recipeToSaveDTO.setType("SALAD");
+            recipeToSaveDTO.setActive(true);
+            recipeToSaveDTO.getProductList().add(productToSaveDto("огурец", "ru"));
+            recipeToSaveDTO.getProductList().add(productToSaveDto("яблоко", "ru"));
 
             return recipeToSaveDTO;
         }

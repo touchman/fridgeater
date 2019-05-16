@@ -1,6 +1,5 @@
-package com.zhdanovich.fridgeater.db.dbo;
+package com.zhdanovich.fridgeater.entity;
 
-import com.zhdanovich.fridgeater.db.dbo.data.RecipeTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -18,11 +17,10 @@ public class RecipeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private int id;
+    private Long id;
 
     @Column(name = "TYPE")
-    @Enumerated(EnumType.STRING)
-    private RecipeTypeEnum type;
+    private String type;
 
     @Column(name = "ACTIVE")
     private boolean active;

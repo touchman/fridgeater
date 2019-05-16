@@ -2,10 +2,9 @@ package com.zhdanovich.fridgeater.service;
 
 import com.zhdanovich.fridgeater.MockData;
 import com.zhdanovich.fridgeater.convertor.RecipesConverter;
-import com.zhdanovich.fridgeater.db.dbo.RecipeEntity;
-import com.zhdanovich.fridgeater.db.dto.AllRecipesDTO;
-import com.zhdanovich.fridgeater.db.dto.RecipeToSaveDTO;
-import com.zhdanovich.fridgeater.helper.LanguageHelper;
+import com.zhdanovich.fridgeater.dto.AllRecipesDto;
+import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
+import com.zhdanovich.fridgeater.entity.RecipeEntity;
 import com.zhdanovich.fridgeater.repository.RecipeRepository;
 import com.zhdanovich.fridgeater.service.impl.RecipeServiceImpl;
 import org.junit.Assert;
@@ -31,14 +30,14 @@ public class RecipeServiceTest {
     private RecipeRepository recipeRepository;
 
     @Mock
-    private LanguageHelper languageHelper;
+    private LanguageService languageService;
 
     @Spy
     private RecipesConverter recipesConverter;
 
     @Test
     public void addRecipeTest() {
-        final RecipeToSaveDTO recipeToSaveDTO = MockData.Dto.recipeToSaveDTO();
+        final RecipeToSaveDto recipeToSaveDTO = MockData.Dto.recipeToSaveDtoEN();
 
         final RecipeEntity recipeEntity = MockData.Entity.recipeEntity();
 
@@ -57,10 +56,10 @@ public class RecipeServiceTest {
 
         doReturn(recipeEntityList).when(recipeRepository).findAll();
 
-        final AllRecipesDTO allRecipes = recipeService.getAllRecipes();
+        final AllRecipesDto allRecipes = recipeService.getAllRecipes();
 
         Assert.assertEquals(2, allRecipes.getAllRecipes().size());
-        for (final RecipeToSaveDTO recipe : allRecipes.getAllRecipes()) {
+        for (final RecipeToSaveDto recipe : allRecipes.getAllRecipes()) {
             Assert.assertTrue(recipe.getProductList().stream().allMatch(productToSaveDTO -> productToSaveDTO.getLang().equalsIgnoreCase(recipe.getLang())));
         }
     }

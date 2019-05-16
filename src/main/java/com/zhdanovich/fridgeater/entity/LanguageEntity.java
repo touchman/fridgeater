@@ -1,4 +1,4 @@
-package com.zhdanovich.fridgeater.db.dbo;
+package com.zhdanovich.fridgeater.entity;
 
 import lombok.Data;
 
@@ -11,7 +11,7 @@ public class LanguageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private int id;
+    private Long id;
 
     @Column(name = "CODE", unique = true)
     private String code;

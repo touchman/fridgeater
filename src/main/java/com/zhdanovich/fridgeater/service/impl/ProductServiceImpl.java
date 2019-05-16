@@ -1,12 +1,12 @@
 package com.zhdanovich.fridgeater.service.impl;
 
 import com.zhdanovich.fridgeater.convertor.ProductConverter;
-import com.zhdanovich.fridgeater.db.dbo.LanguageEntity;
-import com.zhdanovich.fridgeater.db.dbo.ProductEntity;
-import com.zhdanovich.fridgeater.db.dto.AllProductsDTO;
-import com.zhdanovich.fridgeater.db.dto.ProductToSaveDTO;
-import com.zhdanovich.fridgeater.helper.LanguageHelper;
+import com.zhdanovich.fridgeater.dto.AllProductsDto;
+import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
+import com.zhdanovich.fridgeater.entity.LanguageEntity;
+import com.zhdanovich.fridgeater.entity.ProductEntity;
 import com.zhdanovich.fridgeater.repository.ProductRepository;
+import com.zhdanovich.fridgeater.service.LanguageService;
 import com.zhdanovich.fridgeater.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,11 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductConverter productConverter;
-    private final LanguageHelper languageHelper;
+    private final LanguageService languageService;
 
     @Override
-    public ProductToSaveDTO addProduct(final ProductToSaveDTO productToSaveDTO) {
-        final LanguageEntity lang = languageHelper.getLanguage(productToSaveDTO.getLang());
+    public ProductToSaveDto addProduct(final ProductToSaveDto productToSaveDTO) {
+        final LanguageEntity lang = languageService.getLanguage(productToSaveDTO.getLang());
         final ProductEntity productEntity = productConverter.productToEntity(productToSaveDTO, lang);
         final ProductEntity entity = productRepository.save(productEntity);
         productToSaveDTO.setId(entity.getId());
@@ -32,9 +32,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public AllProductsDTO getAllProducts() {
+    public AllProductsDto getAllProducts() {
         final List<ProductEntity> allProducts = productRepository.findAll();
-        final AllProductsDTO allProductsDTO = new AllProductsDTO();
+        final AllProductsDto allProductsDTO = new AllProductsDto();
 
         for (final ProductEntity allProduct : allProducts) {
             allProductsDTO.getAllProducts().addAll(productConverter.productEntityToDtoList(allProduct));

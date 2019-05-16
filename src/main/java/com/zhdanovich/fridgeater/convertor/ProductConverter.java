@@ -1,9 +1,9 @@
 package com.zhdanovich.fridgeater.convertor;
 
-import com.zhdanovich.fridgeater.db.dbo.LanguageEntity;
-import com.zhdanovich.fridgeater.db.dbo.ProductEntity;
-import com.zhdanovich.fridgeater.db.dbo.ProductNameEntity;
-import com.zhdanovich.fridgeater.db.dto.ProductToSaveDTO;
+import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
+import com.zhdanovich.fridgeater.entity.LanguageEntity;
+import com.zhdanovich.fridgeater.entity.ProductEntity;
+import com.zhdanovich.fridgeater.entity.ProductNameEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class ProductConverter {
 
-    public ProductEntity productToEntity(final ProductToSaveDTO productToSaveDTO, final LanguageEntity lang) {
+    public ProductEntity productToEntity(final ProductToSaveDto productToSaveDTO, final LanguageEntity lang) {
         final ProductNameEntity productNameEntity = new ProductNameEntity();
         productNameEntity.setName(productToSaveDTO.getName());
         productNameEntity.setLang(lang);
@@ -23,12 +23,12 @@ public class ProductConverter {
         return productEntity;
     }
 
-    public List<ProductToSaveDTO> productEntityToDtoList(final ProductEntity productEntity) {
-        final List<ProductToSaveDTO> productList = new ArrayList<>();
+    public List<ProductToSaveDto> productEntityToDtoList(final ProductEntity productEntity) {
+        final List<ProductToSaveDto> productList = new ArrayList<>();
         final List<ProductNameEntity> nameEntity = productEntity.getNameEntity();
 
         for (final ProductNameEntity productNameEntity : nameEntity) {
-            final ProductToSaveDTO dto = new ProductToSaveDTO();
+            final ProductToSaveDto dto = new ProductToSaveDto();
             dto.setActive(productEntity.isActive());
             dto.setLang(productNameEntity.getLang().getCode());
             dto.setName(productNameEntity.getName());

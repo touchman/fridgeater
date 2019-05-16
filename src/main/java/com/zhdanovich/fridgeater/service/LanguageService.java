@@ -1,15 +1,15 @@
-package com.zhdanovich.fridgeater.helper;
+package com.zhdanovich.fridgeater.service;
 
-import com.zhdanovich.fridgeater.db.dbo.LanguageEntity;
+import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.repository.LanguageRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 @AllArgsConstructor
-public class LanguageHelper {
+public class LanguageService {
 
     private final LanguageRepository languageRepository;
 

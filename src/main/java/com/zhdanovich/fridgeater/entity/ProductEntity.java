@@ -1,4 +1,4 @@
-package com.zhdanovich.fridgeater.db.dbo;
+package com.zhdanovich.fridgeater.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +15,7 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private int id;
+    private Long id;
 
     @Column(name = "ACTIVE")
     private boolean active;

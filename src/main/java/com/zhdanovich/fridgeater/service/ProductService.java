@@ -1,10 +1,10 @@
 package com.zhdanovich.fridgeater.service;
 
-import com.zhdanovich.fridgeater.db.dto.AllProductsDTO;
-import com.zhdanovich.fridgeater.db.dto.ProductToSaveDTO;
+import com.zhdanovich.fridgeater.dto.AllProductsDto;
+import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
 
 public interface ProductService {
-    ProductToSaveDTO addProduct(ProductToSaveDTO productToSaveDTO);
+    ProductToSaveDto addProduct(ProductToSaveDto productToSaveDTO);
 
-    AllProductsDTO getAllProducts();
+    AllProductsDto getAllProducts();
 }

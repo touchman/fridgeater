@@ -1,10 +1,10 @@
 package com.zhdanovich.fridgeater.service;
 
-import com.zhdanovich.fridgeater.db.dto.AllRecipesDTO;
-import com.zhdanovich.fridgeater.db.dto.RecipeToSaveDTO;
+import com.zhdanovich.fridgeater.dto.AllRecipesDto;
+import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
 
 public interface RecipeService {
-    RecipeToSaveDTO addRecipe(RecipeToSaveDTO recipeDTO);
+    RecipeToSaveDto addRecipe(RecipeToSaveDto recipeDTO);
 
-    AllRecipesDTO getAllRecipes();
+    AllRecipesDto getAllRecipes();
 }

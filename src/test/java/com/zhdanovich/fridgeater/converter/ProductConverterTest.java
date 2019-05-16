@@ -1,12 +1,12 @@
-package com.zhdanovich.fridgeater.controller;
+package com.zhdanovich.fridgeater.converter;
 
 
 import com.zhdanovich.fridgeater.MockData;
 import com.zhdanovich.fridgeater.convertor.ProductConverter;
-import com.zhdanovich.fridgeater.db.dbo.LanguageEntity;
-import com.zhdanovich.fridgeater.db.dbo.ProductEntity;
-import com.zhdanovich.fridgeater.db.dbo.ProductNameEntity;
-import com.zhdanovich.fridgeater.db.dto.ProductToSaveDTO;
+import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
+import com.zhdanovich.fridgeater.entity.LanguageEntity;
+import com.zhdanovich.fridgeater.entity.ProductEntity;
+import com.zhdanovich.fridgeater.entity.ProductNameEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class ProductConverterTest {
 
     @Test
     public void productToEntityTest() {
-        final ProductToSaveDTO dto = MockData.Dto.productToSaveDTO();
+        final ProductToSaveDto dto = MockData.Dto.productToSaveDto("cucumber", "en");
 
         final LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setCode(dto.getLang());
@@ -35,11 +35,11 @@ public class ProductConverterTest {
     @Test
     public void productEntityToDto() {
         final ProductEntity productEntity = MockData.Entity.productEntity();
-        final List<ProductToSaveDTO> dtoList = converter.productEntityToDtoList(productEntity);
+        final List<ProductToSaveDto> dtoList = converter.productEntityToDtoList(productEntity);
 
-        Assert.assertEquals(dtoList.size(), 2);
+        Assert.assertEquals(productEntity.getNameEntity().size(), dtoList.size());
         int countOfMatches = 0;
-        for (final ProductToSaveDTO productToSaveDTO : dtoList) {
+        for (final ProductToSaveDto productToSaveDTO : dtoList) {
             Assert.assertEquals(productToSaveDTO.isActive(), productEntity.isActive());
 
             for (final ProductNameEntity productNameEntity : productEntity.getNameEntity()) {

@@ -1,4 +1,4 @@
-package com.zhdanovich.fridgeater.db.dbo;
+package com.zhdanovich.fridgeater.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +16,7 @@ public class ProductNameEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")

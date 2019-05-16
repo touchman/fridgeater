@@ -1,7 +1,7 @@
-package com.zhdanovich.fridgeater.helper;
+package com.zhdanovich.fridgeater.service;
 
 import com.zhdanovich.fridgeater.MockData;
-import com.zhdanovich.fridgeater.db.dbo.LanguageEntity;
+import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.repository.LanguageRepository;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,10 +16,10 @@ import java.util.List;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
-public class LanguageHelperTest {
+public class LanguageServiceTest {
 
     @InjectMocks
-    private LanguageHelper languageHelper;
+    private LanguageService languageService;
 
     @Mock
     private LanguageRepository languageRepository;
@@ -27,14 +27,14 @@ public class LanguageHelperTest {
     @Test
     public void getLanguageTest() {
         final List<LanguageEntity> languageEntities = new ArrayList<>();
-        languageEntities.add(MockData.Entity.languageEntityEN());
-        languageEntities.add(MockData.Entity.languageEntityRU());
+        languageEntities.add(MockData.Entity.languageEntity("en"));
+        languageEntities.add(MockData.Entity.languageEntity("ru"));
 
         final String languageToGet = "en";
 
         doReturn(languageEntities).when(languageRepository).findAll();
 
-        final LanguageEntity language = languageHelper.getLanguage(languageToGet);
+        final LanguageEntity language = languageService.getLanguage(languageToGet);
 
         Assert.assertEquals(language.getCode(), languageToGet);
     }
@@ -42,14 +42,14 @@ public class LanguageHelperTest {
     @Test
     public void getLanguageNotExistsTest() {
         final List<LanguageEntity> languageEntities = new ArrayList<>();
-        languageEntities.add(MockData.Entity.languageEntityEN());
-        languageEntities.add(MockData.Entity.languageEntityRU());
+        languageEntities.add(MockData.Entity.languageEntity("en"));
+        languageEntities.add(MockData.Entity.languageEntity("ru"));
 
         final String languageToGet = "es";
 
         doReturn(languageEntities).when(languageRepository).findAll();
 
-        final LanguageEntity language = languageHelper.getLanguage(languageToGet);
+        final LanguageEntity language = languageService.getLanguage(languageToGet);
 
         Assert.assertEquals(language.getCode(), languageToGet);
     }

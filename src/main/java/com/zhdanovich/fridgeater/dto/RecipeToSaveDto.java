@@ -1,4 +1,4 @@
-package com.zhdanovich.fridgeater.db.dto;
+package com.zhdanovich.fridgeater.dto;
 
 import lombok.Data;
 
@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class RecipeToSaveDTO {
+public class RecipeToSaveDto {
 
-    private int id;
+    private Long id;
     private String type;
     private boolean active;
     private String name;
     private String lang;
-    private List<ProductToSaveDTO> productList = new ArrayList<>();
+    private List<ProductToSaveDto> productList = new ArrayList<>();
 }

@@ -1,7 +1,7 @@
-package com.zhdanovich.fridgeater.controller;
+package com.zhdanovich.fridgeater.converter;
 
-import com.zhdanovich.fridgeater.db.dto.AllProductsDTO;
-import com.zhdanovich.fridgeater.db.dto.ProductToSaveDTO;
+import com.zhdanovich.fridgeater.dto.AllProductsDto;
+import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
 import com.zhdanovich.fridgeater.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,12 +17,12 @@ public class ProductController {
     private final ProductService productService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ProductToSaveDTO saveProduct(@RequestBody final ProductToSaveDTO productToSaveDTO) {
+    public ProductToSaveDto saveProduct(@RequestBody final ProductToSaveDto productToSaveDTO) {
         return productService.addProduct(productToSaveDTO);
     }
 
     @RequestMapping(value = "/getAllProducts", method = RequestMethod.POST)
-    public AllProductsDTO getAllProducts() {
+    public AllProductsDto getAllProducts() {
         return productService.getAllProducts();
     }
 }
