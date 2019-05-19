@@ -1,17 +1,17 @@
 package com.zhdanovich.fridgeater.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "language")
 @Table(name = "LANGUAGE")
-public class LanguageEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+public class LanguageEntity extends CommonFields {
 
     @Column(name = "CODE", unique = true)
     private String code;

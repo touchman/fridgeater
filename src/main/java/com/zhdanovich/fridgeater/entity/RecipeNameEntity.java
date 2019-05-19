@@ -6,16 +6,13 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "RECIPE_NAME", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"LANG_ID", "NAME"})
 })
-public class RecipeNameEntity {
-    @Id
-    @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class RecipeNameEntity extends CommonFields {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RECIPE_ID")

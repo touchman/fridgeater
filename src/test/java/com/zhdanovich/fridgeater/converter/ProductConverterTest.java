@@ -39,12 +39,12 @@ public class ProductConverterTest {
 
         Assert.assertEquals(productEntity.getNameEntity().size(), dtoList.size());
         int countOfMatches = 0;
-        for (final ProductToSaveDto productToSaveDTO : dtoList) {
-            Assert.assertEquals(productToSaveDTO.isActive(), productEntity.isActive());
+        for (final ProductToSaveDto productToSaveDto : dtoList) {
+            Assert.assertEquals(productToSaveDto.isActive(), productEntity.isActive());
 
             for (final ProductNameEntity productNameEntity : productEntity.getNameEntity()) {
-                if (StringUtils.equalsIgnoreCase(productNameEntity.getName(), productToSaveDTO.getName())
-                        && StringUtils.equalsIgnoreCase(productNameEntity.getLang().getCode(), productToSaveDTO.getLang())) {
+                if (StringUtils.equalsIgnoreCase(productNameEntity.getName(), productToSaveDto.getName())
+                        && StringUtils.equalsIgnoreCase(productNameEntity.getLang().getCode(), productToSaveDto.getLang())) {
                     countOfMatches++;
                 }
             }

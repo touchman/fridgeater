@@ -5,6 +5,7 @@ import com.zhdanovich.fridgeater.dto.AllProductsDto;
 import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
 import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.ProductEntity;
+import com.zhdanovich.fridgeater.entity.ProductNameEntity;
 import com.zhdanovich.fridgeater.repository.ProductRepository;
 import com.zhdanovich.fridgeater.service.LanguageService;
 import com.zhdanovich.fridgeater.service.ProductService;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,24 +24,39 @@ public class ProductServiceImpl implements ProductService {
     private final LanguageService languageService;
 
     @Override
-    public ProductToSaveDto addProduct(final ProductToSaveDto productToSaveDTO) {
-        final LanguageEntity lang = languageService.getLanguage(productToSaveDTO.getLang());
-        final ProductEntity productEntity = productConverter.productToEntity(productToSaveDTO, lang);
-        final ProductEntity entity = productRepository.save(productEntity);
-        productToSaveDTO.setId(entity.getId());
+    public ProductToSaveDto addProduct(final ProductToSaveDto productToSaveDto) {
+        final LanguageEntity lang = languageService.getLanguage(productToSaveDto.getLang());
+        final ProductEntity productEntity = getProductEntityIfExist(productToSaveDto);
+        final ProductEntity entity = productEntity != null ? productEntity : productRepository.save(productConverter.productToEntity(productToSaveDto, lang));
+        productToSaveDto.setId(entity.getId());
 
-        return productToSaveDTO;
+        return productToSaveDto;
     }
 
     @Override
-    public AllProductsDto getAllProducts() {
+    public AllProductsDto getProducts() {
         final List<ProductEntity> allProducts = productRepository.findAll();
-        final AllProductsDto allProductsDTO = new AllProductsDto();
+        final AllProductsDto allProductsDto = new AllProductsDto();
 
         for (final ProductEntity allProduct : allProducts) {
-            allProductsDTO.getAllProducts().addAll(productConverter.productEntityToDtoList(allProduct));
+            allProductsDto.getAllProducts().addAll(productConverter.productEntityToDtoList(allProduct));
         }
 
-        return allProductsDTO;
+        return allProductsDto;
+    }
+
+    @Override
+    public ProductEntity getProductEntityIfExist(final ProductToSaveDto productToSaveDto) {
+        final List<ProductEntity> productEntities = productRepository.findAll();
+        ProductEntity productEntity = null;
+        for (final ProductEntity entity : productEntities) {
+            final Optional<ProductNameEntity> nameEntity = entity.getNameEntity().stream().filter(productNameEntity -> productNameEntity.getLang().getCode().equalsIgnoreCase(productToSaveDto.getLang()))
+                    .filter(productNameEntity -> productNameEntity.getName().equals(productToSaveDto.getName())).findAny();
+            if (nameEntity.isPresent()) {
+                productEntity = entity;
+                break;
+            }
+        }
+        return productEntity;
     }
 }

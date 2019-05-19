@@ -7,16 +7,13 @@ import lombok.ToString;
 import javax.persistence.*;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "productName")
 @Table(name = "PRODUCT_NAME", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"LANG_ID", "NAME"})
 })
-public class ProductNameEntity {
-    @Id
-    @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ProductNameEntity extends CommonFields {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")

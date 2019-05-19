@@ -12,13 +12,13 @@ import java.util.List;
 @Service
 public class ProductConverter {
 
-    public ProductEntity productToEntity(final ProductToSaveDto productToSaveDTO, final LanguageEntity lang) {
+    public ProductEntity productToEntity(final ProductToSaveDto productToSaveDto, final LanguageEntity lang) {
         final ProductNameEntity productNameEntity = new ProductNameEntity();
-        productNameEntity.setName(productToSaveDTO.getName());
+        productNameEntity.setName(productToSaveDto.getName());
         productNameEntity.setLang(lang);
         final ProductEntity productEntity = new ProductEntity();
-        productEntity.setActive(productToSaveDTO.isActive());
-        productEntity.addName(productNameEntity);
+        productEntity.setActive(productToSaveDto.isActive());
+        addName(productEntity, productNameEntity);
 
         return productEntity;
     }
@@ -37,5 +37,10 @@ public class ProductConverter {
         }
 
         return productList;
+    }
+
+    private void addName(final ProductEntity productEntity, final ProductNameEntity productNameEntity) {
+        productEntity.getNameEntity().add(productNameEntity);
+        productNameEntity.setProduct(productEntity);
     }
 }

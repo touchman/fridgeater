@@ -16,6 +16,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -37,16 +38,30 @@ public class ProductServiceTest {
     private ProductConverter productConverter;
 
     @Test
-    public void createProduct() {
-        final ProductToSaveDto productToSaveDTO = MockData.Dto.productToSaveDto("cucumber", "en");
+    public void addProductTest() {
+        final ProductToSaveDto productToSaveDto = MockData.Dto.productToSaveDto("cucumber", "en");
 
         final ProductEntity productEntity = MockData.Entity.productEntity();
 
         doReturn(productEntity).when(productRepository).save(any(ProductEntity.class));
 
-        productService.addProduct(productToSaveDTO);
+        productService.addProduct(productToSaveDto);
 
         verify(productRepository, times(1)).save(any(ProductEntity.class));
+    }
+
+    @Test
+    public void addProductAlreadyExistTest() {
+        final ProductToSaveDto productToSaveDto = MockData.Dto.productToSaveDto("cucumber", "en");
+
+        final ProductEntity productEntity = MockData.Entity.productEntity();
+
+        doReturn(Collections.singletonList(productEntity)).when(productRepository).findAll();
+
+        productService.addProduct(productToSaveDto);
+
+        verify(productRepository, times(0)).save(any(ProductEntity.class));
+        verify(productRepository, times(1)).findAll();
     }
 
     @Test
@@ -56,11 +71,11 @@ public class ProductServiceTest {
 
         doReturn(productEntities).when(productRepository).findAll();
 
-        final AllProductsDto allProductsDTO = productService.getAllProducts();
+        final AllProductsDto allProductsDto = productService.getProducts();
 
-        Assert.assertEquals(2, allProductsDTO.getAllProducts().size());
-        Assert.assertEquals(allProductsDTO.getAllProducts().get(0).getName(), productEntities.get(0).getNameEntity().get(0).getName());
-        Assert.assertEquals(allProductsDTO.getAllProducts().get(0).getLang(), productEntities.get(0).getNameEntity().get(0).getLang().getCode());
+        Assert.assertEquals(2, allProductsDto.getAllProducts().size());
+        Assert.assertEquals(allProductsDto.getAllProducts().get(0).getName(), productEntities.get(0).getNameEntity().get(0).getName());
+        Assert.assertEquals(allProductsDto.getAllProducts().get(0).getLang(), productEntities.get(0).getNameEntity().get(0).getLang().getCode());
     }
 
 }

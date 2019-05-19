@@ -6,6 +6,7 @@ import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.ProductEntity;
 import com.zhdanovich.fridgeater.entity.RecipeEntity;
 import com.zhdanovich.fridgeater.entity.RecipeNameEntity;
+import com.zhdanovich.fridgeater.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +19,28 @@ import java.util.stream.Collectors;
 public class RecipesConverter {
 
     private final ProductConverter productConverter;
+    private final ProductService productService;
 
-    public RecipesConverter() {
-        productConverter = new ProductConverter();
-    }
-
-    public RecipeEntity recipeDtoToEntity(final RecipeToSaveDto recipeToSaveDTO, final LanguageEntity lang) {
+    public RecipeEntity recipeDtoToEntity(final RecipeToSaveDto recipeToSaveDto, final LanguageEntity lang) {
         final RecipeNameEntity recipeNameEntity = new RecipeNameEntity();
-        recipeNameEntity.setName(recipeToSaveDTO.getName());
+        recipeNameEntity.setName(recipeToSaveDto.getName());
         recipeNameEntity.setLang(lang);
 
         final RecipeEntity recipeEntity = new RecipeEntity();
-        recipeEntity.setActive(recipeToSaveDTO.isActive());
-        recipeEntity.setType(recipeToSaveDTO.getType());
-        recipeEntity.addName(recipeNameEntity);
+        recipeEntity.setActive(recipeToSaveDto.isActive());
+        recipeEntity.setType(recipeToSaveDto.getType());
+        addName(recipeEntity, recipeNameEntity);
 
-        for (final ProductToSaveDto productToSaveDTO : recipeToSaveDTO.getProductList()) {
-            recipeEntity.addProduct(productConverter.productToEntity(productToSaveDTO, lang));
+        for (final ProductToSaveDto productToSaveDto : recipeToSaveDto.getProductList()) {
+            final ProductEntity productEntity = productService.getProductEntityIfExist(productToSaveDto);
+            addProduct(recipeEntity, productEntity != null ? productEntity : productConverter.productToEntity(productToSaveDto, lang));
         }
 
         return recipeEntity;
     }
 
     public List<RecipeToSaveDto> recipeEntityToDtoList(final RecipeEntity recipeEntity) {
-        final List<RecipeToSaveDto> recipeToSaveDTO = new ArrayList<>();
+        final List<RecipeToSaveDto> recipeToSaveDto = new ArrayList<>();
         final List<RecipeNameEntity> recipeNameEntities = recipeEntity.getRecipeNames();
 
         for (final RecipeNameEntity recipeNameEntity : recipeNameEntities) {
@@ -54,13 +53,23 @@ public class RecipesConverter {
 
             for (final ProductEntity productEntity : recipeEntity.getProductEntities()) {
                 final List<ProductToSaveDto> productToSaveDtos = productConverter.productEntityToDtoList(productEntity);
-                dto.getProductList().addAll(productToSaveDtos.stream().filter(productToSaveDTO -> productToSaveDTO.getLang().equalsIgnoreCase(dto.getLang())).collect(Collectors.toList()));
+                dto.getProductList().addAll(productToSaveDtos.stream().filter(productToSaveDto -> productToSaveDto.getLang().equalsIgnoreCase(dto.getLang())).collect(Collectors.toList()));
             }
 
-            recipeToSaveDTO.add(dto);
+            recipeToSaveDto.add(dto);
         }
 
 
-        return recipeToSaveDTO;
+        return recipeToSaveDto;
+    }
+
+    private void addProduct(final RecipeEntity recipeEntity, final ProductEntity productEntity) {
+        recipeEntity.getProductEntities().add(productEntity);
+        productEntity.getRecipeEntities().add(recipeEntity);
+    }
+
+    private void addName(final RecipeEntity recipeEntity, final RecipeNameEntity recipeName) {
+        recipeEntity.getRecipeNames().add(recipeName);
+        recipeName.setRecipe(recipeEntity);
     }
 }

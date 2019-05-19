@@ -8,14 +8,11 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "product")
 @Table(name = "PRODUCT")
-public class ProductEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+public class ProductEntity extends CommonFields {
 
     @Column(name = "ACTIVE")
     private boolean active;
@@ -33,24 +30,4 @@ public class ProductEntity {
             cascade = CascadeType.PERSIST,
             orphanRemoval = true)
     private List<ProductNameEntity> nameEntity = new ArrayList<>();
-
-    public void addRecipe(final RecipeEntity recipeEntity) {
-        recipeEntities.add(recipeEntity);
-        recipeEntity.getProductEntities().add(this);
-    }
-
-    public void removeRecipe(final RecipeEntity recipeEntity) {
-        recipeEntities.remove(recipeEntity);
-        recipeEntity.getProductEntities().remove(this);
-    }
-
-    public void addName(final ProductNameEntity productNameEntity) {
-        nameEntity.add(productNameEntity);
-        productNameEntity.setProduct(this);
-    }
-
-    public void removeName(final ProductNameEntity productNameEntity) {
-        nameEntity.remove(productNameEntity);
-        productNameEntity.setProduct(null);
-    }
 }
