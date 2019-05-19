@@ -18,7 +18,14 @@
                 <td>{{recipe.active}}</td>
                 <td>{{recipe.name}}</td>
                 <td>{{recipe.lang}}</td>
-                <td>{{recipe.productList}}</td>
+                <td>
+                    <p v-for="(product, i) in recipe.productList" :key="i">
+                        Id: <strong>{{product.id}}<br></strong>
+                        Active: <strong>{{product.active}}<br></strong>
+                        Name: <strong>{{product.name}}<br></strong>
+                        Language: <strong>{{product.lang}}<br></strong>
+                    </p>
+                </td>
             </tr>
             </tbody>
         </table>
