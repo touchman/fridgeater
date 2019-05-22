@@ -26,8 +26,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductToSaveDto addProduct(final ProductToSaveDto productToSaveDto) {
         final LanguageEntity lang = languageService.getLanguage(productToSaveDto.getLang());
-        final ProductEntity productEntity = getProductEntityIfExist(productToSaveDto);
-        final ProductEntity entity = productEntity != null ? productEntity : productRepository.save(productConverter.productToEntity(productToSaveDto, lang));
+        final Optional<ProductEntity> productEntity = Optional.ofNullable(getProductEntityIfExist(productToSaveDto));
+        final ProductEntity entity = productEntity.orElseGet(() -> productRepository.save(productConverter.productToEntity(productToSaveDto, lang)));
         productToSaveDto.setId(entity.getId());
 
         return productToSaveDto;
@@ -35,12 +35,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public AllProductsDto getProducts() {
-        final List<ProductEntity> allProducts = productRepository.findAll();
         final AllProductsDto allProductsDto = new AllProductsDto();
 
-        for (final ProductEntity allProduct : allProducts) {
-            allProductsDto.getAllProducts().addAll(productConverter.productEntityToDtoList(allProduct));
-        }
+        productRepository.findAll().forEach(productEntity -> allProductsDto.getAllProducts().addAll(productConverter.productEntityToDtoList(productEntity)));
 
         return allProductsDto;
     }

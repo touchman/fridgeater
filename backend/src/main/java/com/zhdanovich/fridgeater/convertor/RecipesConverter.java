@@ -10,7 +10,6 @@ import com.zhdanovich.fridgeater.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,19 +30,18 @@ public class RecipesConverter {
         recipeEntity.setType(recipeToSaveDto.getType());
         addName(recipeEntity, recipeNameEntity);
 
-        for (final ProductToSaveDto productToSaveDto : recipeToSaveDto.getProductList()) {
+        recipeToSaveDto.getProductList().forEach(productToSaveDto -> {
             final ProductEntity productEntity = productService.getProductEntityIfExist(productToSaveDto);
             addProduct(recipeEntity, productEntity != null ? productEntity : productConverter.productToEntity(productToSaveDto, lang));
-        }
+        });
 
         return recipeEntity;
     }
 
     public List<RecipeToSaveDto> recipeEntityToDtoList(final RecipeEntity recipeEntity) {
-        final List<RecipeToSaveDto> recipeToSaveDto = new ArrayList<>();
         final List<RecipeNameEntity> recipeNameEntities = recipeEntity.getRecipeNames();
 
-        for (final RecipeNameEntity recipeNameEntity : recipeNameEntities) {
+        return recipeNameEntities.stream().map(recipeNameEntity -> {
             final RecipeToSaveDto dto = new RecipeToSaveDto();
             dto.setLang(recipeNameEntity.getLang().getCode());
             dto.setName(recipeNameEntity.getName());
@@ -55,12 +53,8 @@ public class RecipesConverter {
                 final List<ProductToSaveDto> productToSaveDtos = productConverter.productEntityToDtoList(productEntity);
                 dto.getProductList().addAll(productToSaveDtos.stream().filter(productToSaveDto -> productToSaveDto.getLang().equalsIgnoreCase(dto.getLang())).collect(Collectors.toList()));
             }
-
-            recipeToSaveDto.add(dto);
-        }
-
-
-        return recipeToSaveDto;
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     private void addProduct(final RecipeEntity recipeEntity, final ProductEntity productEntity) {

@@ -26,21 +26,17 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public RecipeToSaveDto addRecipe(final RecipeToSaveDto recipeDto) {
         final LanguageEntity lang = languageService.getLanguage(recipeDto.getLang());
-        final RecipeEntity recipeEntity = getRecipeIfExist(recipeDto);
-        final RecipeEntity entity = recipeEntity != null ? recipeEntity : recipesConverter.recipeDtoToEntity(recipeDto, lang);
+        final Optional<RecipeEntity> recipeEntity = Optional.ofNullable(getRecipeIfExist(recipeDto));
+        final RecipeEntity entity = recipeEntity.orElseGet(() -> recipesConverter.recipeDtoToEntity(recipeDto, lang));
         recipeDto.setId(entity.getId());
-        //recipeDto.getProductList().forEach(productService::addProduct);
 
         return recipesConverter.recipeEntityToDtoList(recipeRepository.save(entity)).get(0);
     }
 
     @Override
     public AllRecipesDto getRecipes() {
-        final List<RecipeEntity> allRecipeEntities = recipeRepository.findAll();
         final AllRecipesDto allRecipesDto = new AllRecipesDto();
-        for (final RecipeEntity recipeEntity : allRecipeEntities) {
-            allRecipesDto.getAllRecipes().addAll(recipesConverter.recipeEntityToDtoList(recipeEntity));
-        }
+        recipeRepository.findAll().forEach(recipeEntity -> allRecipesDto.getAllRecipes().addAll(recipesConverter.recipeEntityToDtoList(recipeEntity)));
 
         return allRecipesDto;
     }
@@ -48,6 +44,7 @@ public class RecipeServiceImpl implements RecipeService {
     public RecipeEntity getRecipeIfExist(final RecipeToSaveDto recipeDto) {
         final List<RecipeEntity> allRecipeEntities = recipeRepository.findAll();
         RecipeEntity recipeEntity = null;
+
         for (final RecipeEntity entity : allRecipeEntities) {
             final Optional<RecipeNameEntity> foundEntity = entity.getRecipeNames().stream().filter(recipeNameEntity -> recipeNameEntity.getLang().getCode().equalsIgnoreCase(recipeDto.getLang()))
                     .filter(recipeNameEntity -> recipeNameEntity.getName().equals(recipeDto.getName())).findAny();

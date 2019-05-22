@@ -6,8 +6,8 @@ import com.zhdanovich.fridgeater.entity.ProductEntity;
 import com.zhdanovich.fridgeater.entity.ProductNameEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductConverter {
@@ -24,19 +24,16 @@ public class ProductConverter {
     }
 
     public List<ProductToSaveDto> productEntityToDtoList(final ProductEntity productEntity) {
-        final List<ProductToSaveDto> productList = new ArrayList<>();
         final List<ProductNameEntity> nameEntity = productEntity.getNameEntity();
 
-        for (final ProductNameEntity productNameEntity : nameEntity) {
+        return nameEntity.stream().map(productNameEntity -> {
             final ProductToSaveDto dto = new ProductToSaveDto();
             dto.setActive(productEntity.isActive());
             dto.setLang(productNameEntity.getLang().getCode());
             dto.setName(productNameEntity.getName());
             dto.setId(productNameEntity.getId());
-            productList.add(dto);
-        }
-
-        return productList;
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     private void addName(final ProductEntity productEntity, final ProductNameEntity productNameEntity) {
