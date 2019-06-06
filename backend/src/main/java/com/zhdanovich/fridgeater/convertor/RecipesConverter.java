@@ -23,6 +23,7 @@ public class RecipesConverter {
     public RecipeEntity recipeDtoToEntity(final RecipeToSaveDto recipeToSaveDto, final LanguageEntity lang) {
         final RecipeNameEntity recipeNameEntity = new RecipeNameEntity();
         recipeNameEntity.setName(recipeToSaveDto.getName());
+        recipeNameEntity.setDescription(recipeToSaveDto.getDescription());
         recipeNameEntity.setLang(lang);
 
         final RecipeEntity recipeEntity = new RecipeEntity();
@@ -48,6 +49,7 @@ public class RecipesConverter {
             dto.setType(recipeEntity.getType());
             dto.setActive(recipeEntity.isActive());
             dto.setId(recipeNameEntity.getId());
+            dto.setDescription(recipeNameEntity.getDescription());
 
             for (final ProductEntity productEntity : recipeEntity.getProductEntities()) {
                 final List<ProductToSaveDto> productToSaveDtos = productConverter.productEntityToDtoList(productEntity);

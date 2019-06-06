@@ -12,8 +12,10 @@ import com.zhdanovich.fridgeater.service.RecipeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -34,20 +36,27 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    public AllRecipesDto addRecipes(final AllRecipesDto recipesToSaveDto) {
+        final AllRecipesDto recipes = new AllRecipesDto();
+        recipes.setRecipe(recipesToSaveDto.getRecipe().stream().map(this::addRecipe).collect(Collectors.toCollection(ArrayList::new)));
+        return recipes;
+    }
+
+    @Override
     public AllRecipesDto getRecipes() {
         final AllRecipesDto allRecipesDto = new AllRecipesDto();
-        recipeRepository.findAll().forEach(recipeEntity -> allRecipesDto.getAllRecipes().addAll(recipesConverter.recipeEntityToDtoList(recipeEntity)));
+        recipeRepository.findAll().forEach(recipeEntity -> allRecipesDto.getRecipe().addAll(recipesConverter.recipeEntityToDtoList(recipeEntity)));
 
         return allRecipesDto;
     }
 
-    public RecipeEntity getRecipeIfExist(final RecipeToSaveDto recipeDto) {
+    private RecipeEntity getRecipeIfExist(final RecipeToSaveDto recipeDto) {
         final List<RecipeEntity> allRecipeEntities = recipeRepository.findAll();
         RecipeEntity recipeEntity = null;
 
         for (final RecipeEntity entity : allRecipeEntities) {
             final Optional<RecipeNameEntity> foundEntity = entity.getRecipeNames().stream().filter(recipeNameEntity -> recipeNameEntity.getLang().getCode().equalsIgnoreCase(recipeDto.getLang()))
-                    .filter(recipeNameEntity -> recipeNameEntity.getName().equals(recipeDto.getName())).findAny();
+                    .filter(recipeNameEntity -> recipeNameEntity.getName().trim().equalsIgnoreCase(recipeDto.getName().trim())).findAny();
             if (foundEntity.isPresent()) {
                 recipeEntity = entity;
                 break;

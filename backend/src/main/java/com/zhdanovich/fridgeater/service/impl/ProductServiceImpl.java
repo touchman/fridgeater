@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity productEntity = null;
         for (final ProductEntity entity : productEntities) {
             final Optional<ProductNameEntity> nameEntity = entity.getNameEntity().stream().filter(productNameEntity -> productNameEntity.getLang().getCode().equalsIgnoreCase(productToSaveDto.getLang()))
-                    .filter(productNameEntity -> productNameEntity.getName().equals(productToSaveDto.getName())).findAny();
+                    .filter(productNameEntity -> productNameEntity.getName().trim().equalsIgnoreCase(productToSaveDto.getName().trim())).findAny();
             if (nameEntity.isPresent()) {
                 productEntity = entity;
                 break;

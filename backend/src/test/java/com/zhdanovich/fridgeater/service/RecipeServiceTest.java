@@ -85,9 +85,25 @@ public class RecipeServiceTest {
 
         final AllRecipesDto allRecipes = recipeService.getRecipes();
 
-        Assert.assertEquals(2, allRecipes.getAllRecipes().size());
-        for (final RecipeToSaveDto recipe : allRecipes.getAllRecipes()) {
+        Assert.assertEquals(2, allRecipes.getRecipe().size());
+        for (final RecipeToSaveDto recipe : allRecipes.getRecipe()) {
             Assert.assertTrue(recipe.getProductList().stream().allMatch(productToSaveDto -> productToSaveDto.getLang().equalsIgnoreCase(recipe.getLang())));
         }
+    }
+
+    @Test
+    public void addRecipesTest() {
+        final RecipeToSaveDto recipeToSaveDto = MockData.Dto.recipeToSaveDtoEN();
+        final AllRecipesDto recipes = new AllRecipesDto();
+        recipes.getRecipe().add(recipeToSaveDto);
+        final RecipeEntity recipeEntity = MockData.Entity.recipeEntity();
+
+        doReturn(recipeEntity).when(recipeRepository).save(any(RecipeEntity.class));
+        doReturn(Collections.singletonList(recipeEntity)).when(recipeRepository).findAll();
+        doReturn(Collections.singletonList(recipeToSaveDto)).when(recipesConverter).recipeEntityToDtoList(any(RecipeEntity.class));
+
+        recipeService.addRecipes(recipes);
+
+        verify(recipeRepository, times(1)).save(any(RecipeEntity.class));
     }
 }

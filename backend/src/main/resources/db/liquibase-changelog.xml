@@ -101,4 +101,14 @@
         <addUniqueConstraint tableName="PRODUCT_NAME" columnNames="LANG_ID,NAME"/>
         <addUniqueConstraint tableName="RECIPE_NAME" columnNames="LANG_ID,NAME"/>
     </changeSet>
+    <changeSet id="addDescriptionColumn" author="zhdanovich">
+        <addColumn tableName="RECIPE_NAME">
+            <column name="DESCRIPTION" type="TEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="extendColumn" author="zhdanovich">
+        <modifyDataType columnName="NAME"
+                        newDataType="VARCHAR(512)"
+                        tableName="PRODUCT_NAME"/>
+    </changeSet>
 </databaseChangeLog>

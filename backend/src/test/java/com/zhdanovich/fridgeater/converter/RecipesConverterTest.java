@@ -80,6 +80,7 @@ public class RecipesConverterTest {
 
         Assert.assertEquals(recipeNameEntity.getLang().getCode(), recipeToSaveDto.getLang());
         Assert.assertEquals(recipeNameEntity.getName(), recipeToSaveDto.getName());
+        Assert.assertEquals(recipeNameEntity.getDescription(), recipeToSaveDto.getDescription());
         Assert.assertEquals(recipeEntity.getType(), recipeToSaveDto.getType());
         Assert.assertEquals(recipeEntity.getProductEntities().size(), recipeToSaveDto.getProductList().size());
         for (final ProductEntity productEntity : recipeEntity.getProductEntities()) {

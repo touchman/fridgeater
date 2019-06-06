@@ -7,5 +7,5 @@ import java.util.List;
 
 @Data
 public class AllRecipesDto {
-    private List<RecipeToSaveDto> allRecipes = new ArrayList<>();
+    private List<RecipeToSaveDto> recipe = new ArrayList<>();
 }

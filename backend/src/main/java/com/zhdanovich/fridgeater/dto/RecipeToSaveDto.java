@@ -12,6 +12,7 @@ public class RecipeToSaveDto {
     private String type;
     private boolean active;
     private String name;
+    private String description;
     private String lang;
     private List<ProductToSaveDto> productList = new ArrayList<>();
 }

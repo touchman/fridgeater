@@ -6,5 +6,7 @@ import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
 public interface RecipeService {
     RecipeToSaveDto addRecipe(RecipeToSaveDto recipeDto);
 
+    AllRecipesDto addRecipes(AllRecipesDto recipesToSaveDto);
+
     AllRecipesDto getRecipes();
 }

@@ -55,17 +55,18 @@ public class MockData {
 
         public static List<RecipeNameEntity> recipeNameEntities() {
             final List<RecipeNameEntity> recipeNameEntities = new ArrayList<>();
-            recipeNameEntities.add(recipeNameEntity("salad from cucumber and apple", "en"));
-            recipeNameEntities.add(recipeNameEntity("салат из огурца и яблока", "ru"));
+            recipeNameEntities.add(recipeNameEntity("salad from cucumber and apple", "cut cucumbers and apples", "en"));
+            recipeNameEntities.add(recipeNameEntity("салат из огурца и яблока", "порежте огурцы и помидоры", "ru"));
 
             return recipeNameEntities;
         }
 
-        public static RecipeNameEntity recipeNameEntity(final String name, final String lang) {
+        public static RecipeNameEntity recipeNameEntity(final String name, final String description, final String lang) {
             final RecipeNameEntity recipeNameEntity = new RecipeNameEntity();
             recipeNameEntity.setId(recipeEntityNameId++);
             recipeNameEntity.setLang(languageEntity(lang));
             recipeNameEntity.setName(name);
+            recipeNameEntity.setDescription(description);
 
             return recipeNameEntity;
         }
@@ -73,8 +74,8 @@ public class MockData {
         public static RecipeEntity recipeEntity() {
             final RecipeEntity recipeEntity = new RecipeEntity();
             recipeEntity.setId(1L);
-            addName(recipeEntity, recipeNameEntity("salad from cucumber and apple", "en"));
-            addName(recipeEntity, recipeNameEntity("салат из огурца и яблока", "ru"));
+            addName(recipeEntity, recipeNameEntity("salad from cucumber and apple", "cut cucumbers and apples", "en"));
+            addName(recipeEntity, recipeNameEntity("салат из огурца и яблока", "порежте огурцы и помидоры", "ru"));
             recipeEntity.setActive(true);
             recipeEntity.setType("SALAD");
             addProduct(recipeEntity, productEntity(Arrays.asList(
@@ -121,6 +122,7 @@ public class MockData {
             final RecipeToSaveDto recipeToSaveDto = new RecipeToSaveDto();
             recipeToSaveDto.setId(recipeDtoId++);
             recipeToSaveDto.setName("salad from cucumber and apple");
+            recipeToSaveDto.setDescription("cut cucumbers and apples");
             recipeToSaveDto.setLang("en");
             recipeToSaveDto.setType("SALAD");
             recipeToSaveDto.setActive(true);
@@ -134,6 +136,7 @@ public class MockData {
             final RecipeToSaveDto recipeToSaveDto = new RecipeToSaveDto();
             recipeToSaveDto.setId(recipeDtoId++);
             recipeToSaveDto.setName("салат из огурца и яблока");
+            recipeToSaveDto.setDescription("порежте огурцы и помидоры");
             recipeToSaveDto.setLang("ru");
             recipeToSaveDto.setType("SALAD");
             recipeToSaveDto.setActive(true);
