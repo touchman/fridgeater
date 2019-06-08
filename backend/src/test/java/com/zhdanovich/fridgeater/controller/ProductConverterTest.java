@@ -1,8 +1,8 @@
-package com.zhdanovich.fridgeater.converter;
+package com.zhdanovich.fridgeater.controller;
 
 
 import com.zhdanovich.fridgeater.MockData;
-import com.zhdanovich.fridgeater.convertor.ProductConverter;
+import com.zhdanovich.fridgeater.converter.ProductConverter;
 import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
 import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.ProductEntity;

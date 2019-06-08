@@ -1,4 +1,4 @@
-package com.zhdanovich.fridgeater.convertor;
+package com.zhdanovich.fridgeater.converter;
 
 import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
 import com.zhdanovich.fridgeater.entity.LanguageEntity;

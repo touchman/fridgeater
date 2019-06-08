@@ -1,9 +1,10 @@
 package com.zhdanovich.fridgeater.service;
 
 import com.zhdanovich.fridgeater.MockData;
-import com.zhdanovich.fridgeater.convertor.ProductConverter;
+import com.zhdanovich.fridgeater.converter.ProductConverter;
 import com.zhdanovich.fridgeater.dto.AllProductsDto;
 import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
+import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.ProductEntity;
 import com.zhdanovich.fridgeater.repository.ProductRepository;
 import com.zhdanovich.fridgeater.service.impl.ProductServiceImpl;
@@ -16,8 +17,8 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -42,8 +43,10 @@ public class ProductServiceTest {
         final ProductToSaveDto productToSaveDto = MockData.Dto.productToSaveDto("cucumber", "en");
 
         final ProductEntity productEntity = MockData.Entity.productEntity();
+        final LanguageEntity languageEntity = MockData.Entity.languageEntity("en");
 
         doReturn(productEntity).when(productRepository).save(any(ProductEntity.class));
+        doReturn(languageEntity).when(languageService).getLanguage(any(String.class));
 
         productService.addProduct(productToSaveDto);
 
@@ -55,13 +58,15 @@ public class ProductServiceTest {
         final ProductToSaveDto productToSaveDto = MockData.Dto.productToSaveDto("cucumber", "en");
 
         final ProductEntity productEntity = MockData.Entity.productEntity();
+        final LanguageEntity languageEntity = MockData.Entity.languageEntity("en");
 
-        doReturn(Collections.singletonList(productEntity)).when(productRepository).findAll();
+        doReturn(Optional.ofNullable(productEntity)).when(productRepository).findByNameAndLang(anyString(), anyLong());
+        doReturn(languageEntity).when(languageService).getLanguage(any(String.class));
 
         productService.addProduct(productToSaveDto);
 
         verify(productRepository, times(0)).save(any(ProductEntity.class));
-        verify(productRepository, times(1)).findAll();
+        verify(productRepository, times(1)).findByNameAndLang(anyString(), anyLong());
     }
 
     @Test

@@ -1,18 +1,16 @@
 package com.zhdanovich.fridgeater.service.impl;
 
-import com.zhdanovich.fridgeater.convertor.ProductConverter;
+import com.zhdanovich.fridgeater.converter.ProductConverter;
 import com.zhdanovich.fridgeater.dto.AllProductsDto;
 import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
 import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.ProductEntity;
-import com.zhdanovich.fridgeater.entity.ProductNameEntity;
 import com.zhdanovich.fridgeater.repository.ProductRepository;
 import com.zhdanovich.fridgeater.service.LanguageService;
 import com.zhdanovich.fridgeater.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductToSaveDto addProduct(final ProductToSaveDto productToSaveDto) {
         final LanguageEntity lang = languageService.getLanguage(productToSaveDto.getLang());
-        final Optional<ProductEntity> productEntity = Optional.ofNullable(getProductEntityIfExist(productToSaveDto));
+        final Optional<ProductEntity> productEntity = productRepository.findByNameAndLang(productToSaveDto.getName(), lang.getId());
         final ProductEntity entity = productEntity.orElseGet(() -> productRepository.save(productConverter.productToEntity(productToSaveDto, lang)));
         productToSaveDto.setId(entity.getId());
 
@@ -40,20 +38,5 @@ public class ProductServiceImpl implements ProductService {
         productRepository.findAll().forEach(productEntity -> allProductsDto.getAllProducts().addAll(productConverter.productEntityToDtoList(productEntity)));
 
         return allProductsDto;
-    }
-
-    @Override
-    public ProductEntity getProductEntityIfExist(final ProductToSaveDto productToSaveDto) {
-        final List<ProductEntity> productEntities = productRepository.findAll();
-        ProductEntity productEntity = null;
-        for (final ProductEntity entity : productEntities) {
-            final Optional<ProductNameEntity> nameEntity = entity.getNameEntity().stream().filter(productNameEntity -> productNameEntity.getLang().getCode().equalsIgnoreCase(productToSaveDto.getLang()))
-                    .filter(productNameEntity -> productNameEntity.getName().trim().equalsIgnoreCase(productToSaveDto.getName().trim())).findAny();
-            if (nameEntity.isPresent()) {
-                productEntity = entity;
-                break;
-            }
-        }
-        return productEntity;
     }
 }

@@ -1,9 +1,10 @@
 package com.zhdanovich.fridgeater.service;
 
 import com.zhdanovich.fridgeater.MockData;
-import com.zhdanovich.fridgeater.convertor.RecipesConverter;
+import com.zhdanovich.fridgeater.converter.RecipesConverter;
 import com.zhdanovich.fridgeater.dto.AllRecipesDto;
 import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
+import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.RecipeEntity;
 import com.zhdanovich.fridgeater.repository.RecipeRepository;
 import com.zhdanovich.fridgeater.service.impl.ProductServiceImpl;
@@ -15,10 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 
@@ -45,10 +43,12 @@ public class RecipeServiceTest {
         final RecipeToSaveDto recipeToSaveDto = MockData.Dto.recipeToSaveDtoEN();
 
         final RecipeEntity recipeEntity = MockData.Entity.recipeEntity();
+        final LanguageEntity languageEntity = MockData.Entity.languageEntity("en");
 
         doReturn(recipeEntity).when(recipeRepository).save(any(RecipeEntity.class));
-        doReturn(Collections.singletonList(recipeEntity)).when(recipeRepository).findAll();
+        doReturn(Optional.ofNullable(recipeEntity)).when(recipeRepository).findByNameAndLang(anyString(), anyLong());
         doReturn(Collections.singletonList(recipeToSaveDto)).when(recipesConverter).recipeEntityToDtoList(any(RecipeEntity.class));
+        doReturn(languageEntity).when(languageService).getLanguage(any(String.class));
 
         recipeService.addRecipe(recipeToSaveDto);
 
@@ -59,11 +59,9 @@ public class RecipeServiceTest {
     public void addRecipeAlreadyExist() {
         final RecipeToSaveDto recipeToSaveDto = MockData.Dto.recipeToSaveDtoEN();
 
-        final List<RecipeEntity> recipeEntityList = new ArrayList<>();
         final RecipeEntity recipeEntity = MockData.Entity.recipeEntity();
-        recipeEntityList.add(recipeEntity);
 
-        doReturn(recipeEntityList).when(recipeRepository).findAll();
+        doReturn(Optional.ofNullable(recipeEntity)).when(recipeRepository).findByNameAndLang(anyString(), anyLong());
         doReturn(recipeEntity).when(recipeRepository).save(any(RecipeEntity.class));
         doReturn(recipeEntity.getRecipeNames().get(0).getLang()).when(languageService).getLanguage(recipeToSaveDto.getLang());
         doReturn(Collections.singletonList(recipeToSaveDto)).when(recipesConverter).recipeEntityToDtoList(any(RecipeEntity.class));
@@ -97,10 +95,12 @@ public class RecipeServiceTest {
         final AllRecipesDto recipes = new AllRecipesDto();
         recipes.getRecipe().add(recipeToSaveDto);
         final RecipeEntity recipeEntity = MockData.Entity.recipeEntity();
+        final LanguageEntity languageEntity = MockData.Entity.languageEntity("en");
 
         doReturn(recipeEntity).when(recipeRepository).save(any(RecipeEntity.class));
-        doReturn(Collections.singletonList(recipeEntity)).when(recipeRepository).findAll();
+        doReturn(Optional.ofNullable(recipeEntity)).when(recipeRepository).findByNameAndLang(anyString(), anyLong());
         doReturn(Collections.singletonList(recipeToSaveDto)).when(recipesConverter).recipeEntityToDtoList(any(RecipeEntity.class));
+        doReturn(languageEntity).when(languageService).getLanguage(any(String.class));
 
         recipeService.addRecipes(recipes);
 

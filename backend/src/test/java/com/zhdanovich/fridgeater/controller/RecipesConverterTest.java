@@ -1,15 +1,15 @@
-package com.zhdanovich.fridgeater.converter;
+package com.zhdanovich.fridgeater.controller;
 
 import com.zhdanovich.fridgeater.MockData;
-import com.zhdanovich.fridgeater.convertor.ProductConverter;
-import com.zhdanovich.fridgeater.convertor.RecipesConverter;
+import com.zhdanovich.fridgeater.converter.ProductConverter;
+import com.zhdanovich.fridgeater.converter.RecipesConverter;
 import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
 import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
 import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.ProductEntity;
 import com.zhdanovich.fridgeater.entity.RecipeEntity;
 import com.zhdanovich.fridgeater.entity.RecipeNameEntity;
-import com.zhdanovich.fridgeater.service.ProductService;
+import com.zhdanovich.fridgeater.repository.ProductRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -31,7 +32,7 @@ public class RecipesConverterTest {
     private RecipesConverter recipesConverter;
 
     @Mock
-    private ProductService productService;
+    private ProductRepository productRepository;
 
     @Spy
     private ProductConverter productConverter;
@@ -70,9 +71,9 @@ public class RecipesConverterTest {
         languageEntity.setCode(recipeToSaveDto.getLang());
 
         for (final ProductToSaveDto productToSaveDto : recipeToSaveDto.getProductList()) {
-            doReturn(
-                    MockData.Entity.productEntity(Collections.singletonList(MockData.Entity.productNameEntity(productToSaveDto.getName(), productToSaveDto.getLang()))))
-                    .when(productService).getProductEntityIfExist(productToSaveDto);
+            doReturn(Optional.ofNullable(
+                    MockData.Entity.productEntity(Collections.singletonList(MockData.Entity.productNameEntity(productToSaveDto.getName(), productToSaveDto.getLang())))))
+                    .when(productRepository).findByNameAndLang(productToSaveDto.getName(), languageEntity.getId());
         }
 
         final RecipeEntity recipeEntity = recipesConverter.recipeDtoToEntity(recipeToSaveDto, languageEntity);

@@ -1,4 +1,4 @@
-package com.zhdanovich.fridgeater.convertor;
+package com.zhdanovich.fridgeater.converter;
 
 import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
 import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
@@ -6,11 +6,12 @@ import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.ProductEntity;
 import com.zhdanovich.fridgeater.entity.RecipeEntity;
 import com.zhdanovich.fridgeater.entity.RecipeNameEntity;
-import com.zhdanovich.fridgeater.service.ProductService;
+import com.zhdanovich.fridgeater.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class RecipesConverter {
 
     private final ProductConverter productConverter;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
 
     public RecipeEntity recipeDtoToEntity(final RecipeToSaveDto recipeToSaveDto, final LanguageEntity lang) {
         final RecipeNameEntity recipeNameEntity = new RecipeNameEntity();
@@ -32,8 +33,8 @@ public class RecipesConverter {
         addName(recipeEntity, recipeNameEntity);
 
         recipeToSaveDto.getProductList().forEach(productToSaveDto -> {
-            final ProductEntity productEntity = productService.getProductEntityIfExist(productToSaveDto);
-            addProduct(recipeEntity, productEntity != null ? productEntity : productConverter.productToEntity(productToSaveDto, lang));
+            final Optional<ProductEntity> productEntity = productRepository.findByNameAndLang(productToSaveDto.getName(), lang.getId());
+            addProduct(recipeEntity, productEntity.orElseGet(() -> productConverter.productToEntity(productToSaveDto, lang)));
         });
 
         return recipeEntity;

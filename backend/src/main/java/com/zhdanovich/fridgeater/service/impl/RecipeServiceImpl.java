@@ -1,11 +1,10 @@
 package com.zhdanovich.fridgeater.service.impl;
 
-import com.zhdanovich.fridgeater.convertor.RecipesConverter;
+import com.zhdanovich.fridgeater.converter.RecipesConverter;
 import com.zhdanovich.fridgeater.dto.AllRecipesDto;
 import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
 import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.RecipeEntity;
-import com.zhdanovich.fridgeater.entity.RecipeNameEntity;
 import com.zhdanovich.fridgeater.repository.RecipeRepository;
 import com.zhdanovich.fridgeater.service.LanguageService;
 import com.zhdanovich.fridgeater.service.RecipeService;
@@ -13,7 +12,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,7 +26,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public RecipeToSaveDto addRecipe(final RecipeToSaveDto recipeDto) {
         final LanguageEntity lang = languageService.getLanguage(recipeDto.getLang());
-        final Optional<RecipeEntity> recipeEntity = Optional.ofNullable(getRecipeIfExist(recipeDto));
+        final Optional<RecipeEntity> recipeEntity = recipeRepository.findByNameAndLang(recipeDto.getName(), lang.getId());
         final RecipeEntity entity = recipeEntity.orElseGet(() -> recipesConverter.recipeDtoToEntity(recipeDto, lang));
         recipeDto.setId(entity.getId());
 
@@ -49,21 +47,4 @@ public class RecipeServiceImpl implements RecipeService {
 
         return allRecipesDto;
     }
-
-    private RecipeEntity getRecipeIfExist(final RecipeToSaveDto recipeDto) {
-        final List<RecipeEntity> allRecipeEntities = recipeRepository.findAll();
-        RecipeEntity recipeEntity = null;
-
-        for (final RecipeEntity entity : allRecipeEntities) {
-            final Optional<RecipeNameEntity> foundEntity = entity.getRecipeNames().stream().filter(recipeNameEntity -> recipeNameEntity.getLang().getCode().equalsIgnoreCase(recipeDto.getLang()))
-                    .filter(recipeNameEntity -> recipeNameEntity.getName().trim().equalsIgnoreCase(recipeDto.getName().trim())).findAny();
-            if (foundEntity.isPresent()) {
-                recipeEntity = entity;
-                break;
-            }
-        }
-        return recipeEntity;
-    }
-
-
 }
