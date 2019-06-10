@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "language")
-@Table(name = "LANGUAGE")
+@Table(name = "language")
 public class LanguageEntity extends CommonFields {
 
     @Column(name = "CODE", unique = true)

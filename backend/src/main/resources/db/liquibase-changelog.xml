@@ -6,7 +6,7 @@
 
 
     <changeSet author="zhdanovich" id="CREATE_TABLES">
-        <createTable tableName="RECIPE">
+        <createTable tableName="recipe">
             <column name="ID" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="RECIPE_PK"/>
             </column>
@@ -16,7 +16,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <createTable tableName="PRODUCT">
+        <createTable tableName="product">
             <column name="ID" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="RECIPE_PK"/>
             </column>
@@ -24,91 +24,91 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <createTable tableName="RECIPE_PRODUCT">
+        <createTable tableName="recipe_product">
             <column name="RECIPE_ID" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="RECIPE_FK" deleteCascade="true"
-                             referencedTableName="RECIPE" referencedColumnNames="ID"/>
+                             referencedTableName="recipe" referencedColumnNames="ID"/>
             </column>
             <column name="PRODUCT_ID" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="PRODUCT_FK" deleteCascade="true"
-                             referencedTableName="PRODUCT" referencedColumnNames="ID"/>
+                             referencedTableName="product" referencedColumnNames="ID"/>
             </column>
         </createTable>
-        <createIndex tableName="RECIPE_PRODUCT" indexName="RECIPE_INX">
+        <createIndex tableName="recipe_product" indexName="RECIPE_INX">
             <column name="RECIPE_ID"/>
         </createIndex>
-        <createIndex tableName="RECIPE_PRODUCT" indexName="PRODUCT_INX">
+        <createIndex tableName="recipe_product" indexName="PRODUCT_INX">
             <column name="PRODUCT_ID"/>
         </createIndex>
-        <createTable tableName="LANGUAGE">
+        <createTable tableName="language">
             <column name="ID" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="LANG_PK"/>
             </column>
             <column name="CODE" type="VARCHAR(255)"/>
         </createTable>
-        <insert tableName="LANGUAGE">
+        <insert tableName="language">
             <column name="CODE">EN</column>
         </insert>
-        <createTable tableName="PRODUCT_NAME">
+        <createTable tableName="product_name">
             <column name="PRODUCT_ID" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="PRODUCT_NAME_FK" deleteCascade="true"
-                             referencedTableName="PRODUCT" referencedColumnNames="ID"/>
+                             referencedTableName="product" referencedColumnNames="ID"/>
             </column>
             <column name="LANG_ID" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="PRODUCT_LANG_FK" deleteCascade="true"
-                             referencedTableName="LANGUAGE" referencedColumnNames="ID"/>
+                             referencedTableName="language" referencedColumnNames="ID"/>
             </column>
             <column name="NAME" type="VARCHAR(255)"/>
         </createTable>
-        <createTable tableName="RECIPE_NAME">
+        <createTable tableName="recipe_name">
             <column name="RECIPE_ID" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="RECIPE_NAME_FK" deleteCascade="true"
-                             referencedTableName="RECIPE" referencedColumnNames="ID"/>
+                             referencedTableName="recipe" referencedColumnNames="ID"/>
             </column>
             <column name="LANG_ID" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="RECIPE_LANG_FK" deleteCascade="true"
-                             referencedTableName="LANGUAGE" referencedColumnNames="ID"/>
+                             referencedTableName="language" referencedColumnNames="ID"/>
             </column>
             <column name="NAME" type="VARCHAR(255)"/>
         </createTable>
         <rollback>
-            <dropTable tableName="RECIPE"/>
-            <dropTable tableName="PRODUCT"/>
-            <dropTable tableName="RECIPE_PRODUCT"/>
-            <dropTable tableName="LANGUAGE"/>
-            <dropTable tableName="RECIPE_NAME"/>
-            <dropTable tableName="PRODUCT_NAME"/>
+            <dropTable tableName="recipe"/>
+            <dropTable tableName="product"/>
+            <dropTable tableName="recipe_product"/>
+            <dropTable tableName="language"/>
+            <dropTable tableName="recipe_name"/>
+            <dropTable tableName="product_name"/>
         </rollback>
     </changeSet>
     <changeSet id="addPKtoProductName" author="zhdanovich">
-        <addColumn tableName="PRODUCT_NAME">
+        <addColumn tableName="product_name">
             <column name="ID" autoIncrement="true" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="RECIPE_PK"/>
             </column>
         </addColumn>
     </changeSet>
     <changeSet id="addUniqueToLanguage" author="zhdanovich">
-        <addUniqueConstraint tableName="LANGUAGE" columnNames="CODE"/>
+        <addUniqueConstraint tableName="language" columnNames="CODE"/>
     </changeSet>
     <changeSet id="addPKtoRecipeName" author="zhdanovich">
-        <addColumn tableName="RECIPE_NAME">
+        <addColumn tableName="recipe_name">
             <column name="ID" autoIncrement="true" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="RECIPE_PK"/>
             </column>
         </addColumn>
     </changeSet>
     <changeSet id="addUniqueToNameTables" author="zhdanovich">
-        <addUniqueConstraint tableName="PRODUCT_NAME" columnNames="LANG_ID,NAME"/>
-        <addUniqueConstraint tableName="RECIPE_NAME" columnNames="LANG_ID,NAME"/>
+        <addUniqueConstraint tableName="product_name" columnNames="LANG_ID,NAME"/>
+        <addUniqueConstraint tableName="recipe_name" columnNames="LANG_ID,NAME"/>
     </changeSet>
     <changeSet id="addDescriptionColumn" author="zhdanovich">
-        <addColumn tableName="RECIPE_NAME">
+        <addColumn tableName="recipe_name">
             <column name="DESCRIPTION" type="TEXT"/>
         </addColumn>
     </changeSet>
     <changeSet id="extendColumn" author="zhdanovich">
         <modifyDataType columnName="NAME"
                         newDataType="VARCHAR(512)"
-                        tableName="PRODUCT_NAME"/>
+                        tableName="product_name"/>
     </changeSet>
 </databaseChangeLog>

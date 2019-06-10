@@ -13,7 +13,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "recipe")
-@Table(name = "RECIPE")
+@Table(name = "recipe")
 public class RecipeEntity extends CommonFields {
 
     @Column(name = "TYPE")

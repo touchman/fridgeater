@@ -9,7 +9,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table(name = "RECIPE_NAME", uniqueConstraints = {
+@Table(name = "recipe_name", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"LANG_ID", "NAME"})
 })
 public class RecipeNameEntity extends CommonFields {

@@ -10,7 +10,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "productName")
-@Table(name = "PRODUCT_NAME", uniqueConstraints = {
+@Table(name = "product_name", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"LANG_ID", "NAME"})
 })
 public class ProductNameEntity extends CommonFields {

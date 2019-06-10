@@ -11,7 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "product")
-@Table(name = "PRODUCT")
+@Table(name = "product")
 public class ProductEntity extends CommonFields {
 
     @Column(name = "ACTIVE")
