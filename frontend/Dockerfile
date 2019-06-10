@@ -6,7 +6,9 @@ RUN mkdir /opt/dir
 WORKDIR ${APP_ROOT}
 ADD . ${APP_ROOT}
 
-RUN npm ci
-RUN npm run build
+RUN npm install
 
-CMD ["npm", "run", "start"]
+#RUN npm ci
+#RUN npm run build
+
+CMD ["npm", "run", "serve"]
