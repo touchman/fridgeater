@@ -12,7 +12,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(recipe, index) in recipes.allRecipes" :key="index">
+            <tr v-for="(recipe, index) in recipes.recipe" :key="index">
                 <td>{{recipe.id}}</td>
                 <td>{{recipe.type}}</td>
                 <td>{{recipe.active}}</td>
