@@ -72,6 +72,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/SeleniumTest.java</exclude>
+                        <exclude>**/FridgeaterApplicationTests.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
