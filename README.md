@@ -8,13 +8,15 @@ Don't worry, dude! Now we can just put name of our stuff from fridge into this A
 
 ---
 
-starting:
+### starting:
 
-##cd fridgeater
-##mvn clean install
-##docker-compose up
+cd fridgeater
 
-###for loading data into database:
+mvn clean install
+
+docker-compose up
+
+#### for loading data into database:
 
 curl -H "Content-Type: application/json" \
   -X POST \
@@ -22,15 +24,13 @@ curl -H "Content-Type: application/json" \
   http://localhost/backend/recipe/recipes
   
   
- Use:
+Use:
 http://localhost/
 
-to run SeleniumTests:
+#### to run SeleniumTests:
 
-##mvn test -Dtest=SeleniumTest
+mvn test -Dtest=SeleniumTest
 
-to test loading context:
+#### to test loading context:
 
-##mvn test -Dtest=FridgeaterApplicationTests
-
-jen pas is 1735ee916abb41999f29936ce53860d6
+mvn test -Dtest=FridgeaterApplicationTests
