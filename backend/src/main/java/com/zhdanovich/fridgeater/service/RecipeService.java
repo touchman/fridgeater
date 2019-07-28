@@ -9,4 +9,6 @@ public interface RecipeService {
     AllRecipesDto addRecipes(AllRecipesDto recipesToSaveDto);
 
     AllRecipesDto getRecipes();
+
+    void deleteRecipe(Long id);
 }

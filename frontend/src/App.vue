@@ -1,19 +1,21 @@
 <template id="app">
     <div>
         <Header/>
-        <PersonList/>
+        <!--<PersonList/>-->
+        <RecipesModel/>
     </div>
 </template>
 
 <script>
-    import PersonList from "./components/PersonList";
+    //import PersonList from "./components/PersonList";
+    import RecipesModel from "./components/RecipesModel";
     import Header from "./components/Header";
 
     export default {
         name: 'app',
         components: {
             Header,
-            PersonList
+            RecipesModel
         }
     }
 </script>

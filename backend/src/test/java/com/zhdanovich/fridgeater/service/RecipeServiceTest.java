@@ -106,4 +106,12 @@ public class RecipeServiceTest {
 
         verify(recipeRepository, times(1)).save(any(RecipeEntity.class));
     }
+
+    @Test
+    public void deleteRecipe() {
+        final Long recipeId = 1L;
+        recipeService.deleteRecipe(recipeId);
+
+        verify(recipeRepository, times(1)).deleteById(recipeId);
+    }
 }

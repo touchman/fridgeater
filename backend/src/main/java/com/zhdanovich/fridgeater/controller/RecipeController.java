@@ -6,10 +6,7 @@ import com.zhdanovich.fridgeater.service.RecipeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/recipe")
@@ -31,6 +28,12 @@ public class RecipeController {
     @RequestMapping(value = "/recipes", method = RequestMethod.GET)
     public ResponseEntity getRecipes() {
         return ResponseEntity.status(HttpStatus.OK).body(recipeService.getRecipes());
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteRecipe(@PathVariable final Long id) {
+        recipeService.deleteRecipe(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Recipe with id=" + id + " has been deleted");
     }
 
 }
