@@ -44,7 +44,7 @@
                     <td><a href="#!" @click="add" class="btn btn-waves green darken-2"><i class="material-icons">add</i></a>
                     </td>
                 </tr>
-                <tr v-for="(recipe, index) in recipes.data.recipe.slice(0, 2)" :key="index">
+                <tr v-for="(recipe, index) in recipes.paginationData" :key="index">
                     <td>{{recipe.type}}</td>
                     <td>{{recipe.name}}</td>
                     <td>{{recipe.lang}}</td>
@@ -63,7 +63,10 @@
                 </tr>
                 </tbody>
             </table>
-
+            <p>
+                <button @click="prevPage">Previous</button>
+                <button @click="nextPage">Next</button>
+            </p>
         </div>
     </div>
 </template>
@@ -87,6 +90,9 @@
                         productList: []
                     },
                     bin: [],
+                    pageSize: 3,
+                    currentPage: 1,
+                    paginationData: []
                 }
             }
         },
@@ -94,13 +100,13 @@
             axios.get(`/backend/recipe/recipes`)
                 .then(response => {
                     this.recipes.data = response.data;
+                    this.recipes.paginationData = response.data.recipe.slice(0, 3);
                 });
             console.log(this.recipes)
         },
         methods: {
             //function to add data to table
             add: function () {
-                console.log(this.recipes);
                 this.recipes.data.recipe.push({
                     type: this.recipes.input.type,
                     active: this.recipes.input.active,
@@ -117,7 +123,6 @@
                     productList: this.recipes.input.productList
                 });
 
-                console.log(str);
                 axios.post('http://localhost/backend/recipe/', str, {headers: {'Content-Type': 'application/json'}})
                     .then((response) => {
                         console.log(response);
@@ -130,7 +135,7 @@
                 for (var key in this.recipes.input) {
                     this.recipes.input[key] = '';
                 }
-                this.$refs.name.focus();
+                this.recipes.input.productList = []
             },
             addProduct: function () {
                 console.log(this.recipes);
@@ -142,8 +147,10 @@
                     })
             },
             remove: function (index, recipeId) {
-                console.log(this.recipes);
-                this.recipes.data.recipe.splice(index, 1);
+                console.log(index);
+                console.log(this.recipes.currentPage * this.recipes.pageSize + index);
+                this.recipes.data.recipe.splice(this.recipes.currentPage * this.recipes.pageSize + index, 1);
+                this.recipes.paginationData.splice(index, 1);
 
                 axios.delete('http://localhost/backend/recipe/' + recipeId)
                     .then((response) => {
@@ -153,6 +160,18 @@
                         console.log(error);
                         alert("Error occurred: " + error)
                     });
+            },
+            nextPage: function () {
+                if ((this.recipes.currentPage * this.recipes.pageSize) < this.recipes.data.recipe.length) this.recipes.currentPage++;
+                const start = this.recipes.currentPage * this.recipes.pageSize,
+                    end = start + this.recipes.pageSize;
+                this.recipes.paginationData = this.recipes.data.recipe.slice(start, end);
+            },
+            prevPage: function () {
+                if (this.recipes.currentPage > 1) this.recipes.currentPage--;
+                const start = this.recipes.currentPage * this.recipes.pageSize,
+                    end = start + this.recipes.pageSize;
+                this.recipes.paginationData = this.recipes.data.recipe.slice(start, end);
             }
         }
     }
