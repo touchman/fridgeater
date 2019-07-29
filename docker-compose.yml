@@ -4,6 +4,7 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
+    restart: on-failure
     depends_on:
       - db
   db:
