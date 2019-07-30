@@ -2,6 +2,10 @@
 
     <div id="app">
         <div class="container">
+            <p>
+                <button @click="prevPage">Previous</button>
+                <button @click="nextPage">Next</button>
+            </p>
             <table class="table-responsive bordered highlight centered hoverable z-depth-2" align="center">
                 <thead>
                 <tr>
@@ -13,10 +17,22 @@
                 <tbody>
                 <tr>
                     <td>
-                        <div class="input-field">
-                            <input placeholder="Type" v-model="recipes.input.type" id="type" type="text">
-                            <label for="type">Type</label>
-                        </div>
+                        <select v-model="recipes.input.type" id="type">
+                            <option value="">OTHER</option>
+                            <option>PASTA</option>
+                            <option>SALAD</option>
+                            <option>BREAD</option>
+                            <option>CURRY</option>
+                            <option>VEGETABLE</option>
+                            <option>SOUP</option>
+                            <option>ROAST</option>
+                            <option>STEW</option>
+                            <option>PIZZA</option>
+                            <option>SAUCE</option>
+                            <option>DESSERT</option>
+                            <option>DRINK</option>
+                        </select>
+                        <label for="type">Type</label>
                     </td>
                     <td>
                         <div class="input-field">
@@ -25,19 +41,23 @@
                         </div>
                     </td>
                     <td>
-                        <div class="input-field">
-                            <input placeholder="Language" v-model="recipes.input.lang" id="lang" type="text">
-                            <label for="lang">Language</label>
-                        </div>
+                        <select v-model="recipes.input.lang" id="lang">
+                            <option disabled value="">ru</option>
+                            <option>en</option>
+                        </select>
+                        <label for="lang">Language</label>
                     </td>
                     <td>
                         <div class="input-field">
-                            <input placeholder="Product" v-model="recipes.input.product" id="product" type="text">
+                            <input placeholder="Product" v-model="recipes.input.product" id="product" type="text"
+                                   v-on:keyup.enter="addProduct">
                             <a href="#!" @click="addProduct" class="btn btn-waves green darken-2"><i
                                     class="material-icons">add</i></a>
-                            <label for="product">Product</label>
+                            <label for="product" @click="addProduct" style="cursor: pointer;">Product</label>
                             <p v-for="(product, i) in recipes.input.productList" :key="i">
-                                {{product.name}},
+                                {{product.name}}<a href="#!" @click="removeProduct(i)"
+                                                   class="btn btn-waves green darken-2"><i
+                                    class="material-icons">remove</i></a>
                             </p>
                         </div>
                     </td>
@@ -50,7 +70,7 @@
                     <td>{{recipe.lang}}</td>
                     <td>
                         <p v-for="(product, i) in recipe.productList" :key="i">
-                            {{product.name}},
+                            {{product.name}}
                         </p>
                     </td>
                     <td style="width: 18%;">
@@ -63,10 +83,6 @@
                 </tr>
                 </tbody>
             </table>
-            <p>
-                <button @click="prevPage">Previous</button>
-                <button @click="nextPage">Next</button>
-            </p>
         </div>
     </div>
 </template>
@@ -123,7 +139,7 @@
                     productList: this.recipes.input.productList
                 });
 
-                axios.post('http://localhost/backend/recipe/', str, {headers: {'Content-Type': 'application/json'}})
+                axios.post('/backend/recipe/', str, {headers: {'Content-Type': 'application/json'}})
                     .then((response) => {
                         console.log(response);
                     })
@@ -138,28 +154,35 @@
                 this.recipes.input.productList = []
             },
             addProduct: function () {
-                console.log(this.recipes);
-                this.recipes.input.productList.push(
-                    {
-                        name: this.recipes.input.product,
-                        lang: this.recipes.input.lang,
-                        active: true
-                    })
+                if (this.recipes.input.product !== '') {
+                    this.recipes.input.productList.push(
+                        {
+                            name: this.recipes.input.product,
+                            lang: this.recipes.input.lang,
+                            active: true
+                        });
+                    this.recipes.input.product = ''
+                }
+            },
+            removeProduct: function (index) {
+                this.recipes.input.productList.splice(index, 1);
             },
             remove: function (index, recipeId) {
-                console.log(index);
-                console.log(this.recipes.currentPage * this.recipes.pageSize + index);
-                this.recipes.data.recipe.splice(this.recipes.currentPage * this.recipes.pageSize + index, 1);
-                this.recipes.paginationData.splice(index, 1);
+                if (confirm("Do you really want to delete this item?")) {
+                    console.log(index);
+                    console.log(this.recipes.currentPage * this.recipes.pageSize + index);
+                    this.recipes.data.recipe.splice(this.recipes.currentPage * this.recipes.pageSize + index, 1);
+                    this.recipes.paginationData.splice(index, 1);
 
-                axios.delete('http://localhost/backend/recipe/' + recipeId)
-                    .then((response) => {
-                        console.log(response);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        alert("Error occurred: " + error)
-                    });
+                    axios.delete('/backend/recipe/' + recipeId)
+                        .then((response) => {
+                            console.log(response);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            alert("Error occurred: " + error)
+                        });
+                }
             },
             nextPage: function () {
                 if ((this.recipes.currentPage * this.recipes.pageSize) < this.recipes.data.recipe.length) this.recipes.currentPage++;
