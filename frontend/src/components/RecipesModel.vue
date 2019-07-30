@@ -2,14 +2,10 @@
 
     <div id="app">
         <div class="container">
-            <p>
-                <button @click="prevPage">Previous</button>
-                <button @click="nextPage">Next</button>
-            </p>
             <table class="table-responsive bordered highlight centered hoverable z-depth-2" align="center">
                 <thead>
                 <tr>
-                    <th v-for="column in recipes.columns">
+                    <th v-for="column in recipes.columns" @click="sort(column)" style="cursor: pointer;">
                         {{column}}
                     </th>
                 </tr>
@@ -18,7 +14,7 @@
                 <tr>
                     <td>
                         <select v-model="recipes.input.type" id="type">
-                            <option value="">OTHER</option>
+                            <option>OTHER</option>
                             <option>PASTA</option>
                             <option>SALAD</option>
                             <option>BREAD</option>
@@ -42,7 +38,7 @@
                     </td>
                     <td>
                         <select v-model="recipes.input.lang" id="lang">
-                            <option disabled value="">ru</option>
+                            <option value="">ru</option>
                             <option>en</option>
                         </select>
                         <label for="lang">Language</label>
@@ -64,7 +60,7 @@
                     <td><a href="#!" @click="add" class="btn btn-waves green darken-2"><i class="material-icons">add</i></a>
                     </td>
                 </tr>
-                <tr v-for="(recipe, index) in recipes.paginationData" :key="index">
+                <tr v-for="(recipe, index) in sorted" :key="index">
                     <td>{{recipe.type}}</td>
                     <td>{{recipe.name}}</td>
                     <td>{{recipe.lang}}</td>
@@ -98,39 +94,38 @@
                     data: [],
                     columns: ['Type', 'Name', 'Language', 'Products', 'Actions'],
                     input: {
-                        type: "",
+                        type: "OTHER",
                         active: true,
                         name: "",
                         lang: "",
                         product: "",
                         productList: []
-                    },
-                    bin: [],
-                    pageSize: 3,
-                    currentPage: 1,
-                    paginationData: []
-                }
+                    }
+                },
+                currentSort: 'name',
+                currentSortDir: 'asc'
             }
         },
         created() {
             axios.get(`/backend/recipe/recipes`)
                 .then(response => {
                     this.recipes.data = response.data;
-                    this.recipes.paginationData = response.data.recipe.slice(0, 3);
                 });
             console.log(this.recipes)
         },
         methods: {
+            sort: function (str) {
+                if (str === 'products' || str === 'actions') return;
+                const s = str.toLowerCase();
+                console.log(s);
+                //if s == current sort, reverse
+                if (s === this.currentSort) {
+                    this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
+                }
+                this.currentSort = s;
+            },
             //function to add data to table
             add: function () {
-                this.recipes.data.recipe.push({
-                    type: this.recipes.input.type,
-                    active: this.recipes.input.active,
-                    name: this.recipes.input.name,
-                    lang: this.recipes.input.lang,
-                    productList: this.recipes.input.productList
-                });
-
                 const str = JSON.stringify({
                     type: this.recipes.input.type,
                     active: this.recipes.input.active,
@@ -142,16 +137,25 @@
                 axios.post('/backend/recipe/', str, {headers: {'Content-Type': 'application/json'}})
                     .then((response) => {
                         console.log(response);
+                        this.recipes.data.recipe.push({
+                            id: response.data.id,
+                            type: response.data.type,
+                            active: response.data.active,
+                            name: response.data.name,
+                            lang: response.data.lang,
+                            productList: response.data.productList
+                        });
                     })
                     .catch((error) => {
                         console.log(error);
                         alert("Error occurred: " + error)
                     });
 
-                for (var key in this.recipes.input) {
+                for (const key in this.recipes.input) {
                     this.recipes.input[key] = '';
                 }
-                this.recipes.input.productList = []
+                this.recipes.input.productList = [];
+                this.recipes.input.type = 'OTHER';
             },
             addProduct: function () {
                 if (this.recipes.input.product !== '') {
@@ -169,10 +173,7 @@
             },
             remove: function (index, recipeId) {
                 if (confirm("Do you really want to delete this item?")) {
-                    console.log(index);
-                    console.log(this.recipes.currentPage * this.recipes.pageSize + index);
-                    this.recipes.data.recipe.splice(this.recipes.currentPage * this.recipes.pageSize + index, 1);
-                    this.recipes.paginationData.splice(index, 1);
+                    this.recipes.data.recipe.splice(index, 1);
 
                     axios.delete('/backend/recipe/' + recipeId)
                         .then((response) => {
@@ -183,18 +184,20 @@
                             alert("Error occurred: " + error)
                         });
                 }
-            },
-            nextPage: function () {
-                if ((this.recipes.currentPage * this.recipes.pageSize) < this.recipes.data.recipe.length) this.recipes.currentPage++;
-                const start = this.recipes.currentPage * this.recipes.pageSize,
-                    end = start + this.recipes.pageSize;
-                this.recipes.paginationData = this.recipes.data.recipe.slice(start, end);
-            },
-            prevPage: function () {
-                if (this.recipes.currentPage > 1) this.recipes.currentPage--;
-                const start = this.recipes.currentPage * this.recipes.pageSize,
-                    end = start + this.recipes.pageSize;
-                this.recipes.paginationData = this.recipes.data.recipe.slice(start, end);
+            }
+        },
+        computed: {
+            sorted: function () {
+                if (this.recipes.data.recipe == null) {
+                    return [];
+                }
+                return this.recipes.data.recipe.sort((a, b) => {
+                    let modifier = 1;
+                    if (this.currentSortDir === 'desc') modifier = -1;
+                    if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+                    if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+                    return 0;
+                });
             }
         }
     }
