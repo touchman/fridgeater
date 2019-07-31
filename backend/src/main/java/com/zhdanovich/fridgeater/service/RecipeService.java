@@ -11,4 +11,6 @@ public interface RecipeService {
     AllRecipesDto getRecipes();
 
     void deleteRecipe(Long id);
+
+    RecipeToSaveDto updateRecipe(RecipeToSaveDto recipeDto, Long id);
 }

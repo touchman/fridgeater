@@ -60,9 +60,14 @@ public class RecipesConverter {
         }).collect(Collectors.toList());
     }
 
-    private void addProduct(final RecipeEntity recipeEntity, final ProductEntity productEntity) {
+    public void addProduct(final RecipeEntity recipeEntity, final ProductEntity productEntity) {
         recipeEntity.getProductEntities().add(productEntity);
         productEntity.getRecipeEntities().add(recipeEntity);
+    }
+
+    public void removeProduct(final RecipeEntity recipeEntity, final ProductEntity productEntity) {
+        recipeEntity.getProductEntities().remove(productEntity);
+        productEntity.getRecipeEntities().remove(recipeEntity);
     }
 
     private void addName(final RecipeEntity recipeEntity, final RecipeNameEntity recipeName) {

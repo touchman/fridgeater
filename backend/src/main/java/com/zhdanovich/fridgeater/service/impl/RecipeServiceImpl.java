@@ -1,5 +1,6 @@
 package com.zhdanovich.fridgeater.service.impl;
 
+import com.zhdanovich.fridgeater.converter.ProductConverter;
 import com.zhdanovich.fridgeater.converter.RecipesConverter;
 import com.zhdanovich.fridgeater.dto.AllRecipesDto;
 import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
@@ -21,6 +22,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final RecipesConverter recipesConverter;
+    private final ProductConverter productConverter;
     private final LanguageService languageService;
 
     @Override
@@ -52,4 +54,40 @@ public class RecipeServiceImpl implements RecipeService {
     public void deleteRecipe(final Long id) {
         recipeRepository.deleteById(id);
     }
+
+    @Override
+    public RecipeToSaveDto updateRecipe(final RecipeToSaveDto newRecipeDto, final Long id) {
+        final LanguageEntity language = languageService.getLanguage(newRecipeDto.getLang());
+        final RecipeEntity recipeEntity1 = recipeRepository.findById(id).map(recipeEntity -> {
+                    recipeEntity.setType(newRecipeDto.getType());
+                    recipeEntity.getRecipeNames().forEach(recipeNameEntity -> {
+                        if (newRecipeDto.getLang().equalsIgnoreCase(recipeNameEntity.getLang().getCode())) {
+                            recipeNameEntity.setName(newRecipeDto.getName());
+                        }
+                    });
+                    if (!newRecipeDto.getProductList().isEmpty()) {
+                        recipeEntity.getProductEntities().forEach(productEntity -> {
+                            productEntity.getNameEntity().forEach(productNameEntity -> {
+                                newRecipeDto.getProductList().stream()
+                                        .filter(productToSaveDto -> productToSaveDto.getId() != null)
+                                        .forEach(newProductName -> {
+                                            if (newProductName.getId().equals(productNameEntity.getId())) {
+                                                productNameEntity.setName(newProductName.getName());
+                                            }
+                                        });
+                            });
+                        });
+                        newRecipeDto.getProductList().stream().filter(productToSaveDto -> productToSaveDto.getId() == null)
+                                .forEach(productToSaveDto -> recipesConverter.addProduct(recipeEntity, productConverter.productToEntity(productToSaveDto, language)));
+
+                    } else if (newRecipeDto.getProductList().isEmpty() && !recipeEntity.getProductEntities().isEmpty()) {
+                        recipeEntity.getProductEntities().forEach(productEntity -> recipesConverter.removeProduct(recipeEntity, productEntity));
+                    }
+
+                    return recipeRepository.save(recipeEntity);
+                }
+        ).orElseGet(() -> recipeRepository.save(recipesConverter.recipeDtoToEntity(newRecipeDto, language)));
+        return recipesConverter.recipeEntityToDtoList(recipeEntity1).get(0);
+    }
+
 }

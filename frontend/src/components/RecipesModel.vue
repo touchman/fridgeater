@@ -2,6 +2,12 @@
 
     <div id="app">
         <div class="container">
+            <modal v-show="isModalVisible" @close="closeModal"
+                   v-bind:id="recipes.editableInput.id"
+                   v-bind:type="recipes.editableInput.type"
+                   v-bind:name="recipes.editableInput.name"
+                   v-bind:lang="recipes.editableInput.lang"
+                   v-bind:productList="recipes.editableInput.productList"/>
             <table class="table-responsive bordered highlight centered hoverable z-depth-2" align="center">
                 <thead>
                 <tr>
@@ -47,17 +53,17 @@
                         <div class="input-field">
                             <input placeholder="Product" v-model="recipes.input.product" id="product" type="text"
                                    v-on:keyup.enter="addProduct">
-                            <a href="#!" @click="addProduct" class="btn btn-waves green darken-2"><i
+                            <a href="#!" @click="addProduct" class="btn green darken-2"><i
                                     class="material-icons">add</i></a>
                             <label for="product" @click="addProduct" style="cursor: pointer;">Product</label>
                             <p v-for="(product, i) in recipes.input.productList" :key="i">
                                 {{product.name}}<a href="#!" @click="removeProduct(i)"
-                                                   class="btn btn-waves green darken-2"><i
+                                                   class="btn green darken-2"><i
                                     class="material-icons">remove</i></a>
                             </p>
                         </div>
                     </td>
-                    <td><a href="#!" @click="add" class="btn btn-waves green darken-2"><i class="material-icons">add</i></a>
+                    <td><a href="#!" @click="add" class="btn green darken-2"><i class="material-icons">add</i></a>
                     </td>
                 </tr>
                 <tr v-for="(recipe, index) in sorted" :key="index">
@@ -70,9 +76,10 @@
                         </p>
                     </td>
                     <td style="width: 18%;">
-                        <!--<a href="#modal" @click="edit(index)" class="btn waves-effect waves-light yellow darken-2"><i class="material-icons">edit</i>
-                        </a>-->
-                        <a href="#!" class="btn waves-effect waves-light red darken-2"
+                        <a href="#!" class="btn waves-light red darken-2"
+                           @click="showModal(index)"><i class="material-icons">edit</i>
+                        </a>
+                        <a href="#!" class="btn waves-light red darken-2"
                            @click="remove(index, recipe.id)"><i class="material-icons">remove</i>
                         </a>
                     </td>
@@ -86,15 +93,29 @@
 <script>
     import "materialize-css/dist/js/materialize.min";
     import axios from 'axios';
+    import modal from '../components/Modal';
 
     export default {
+        components: {
+            modal,
+        },
         data() {
             return {
+                isModalVisible: false,
                 recipes: {
                     data: [],
                     columns: ['Type', 'Name', 'Language', 'Products', 'Actions'],
                     input: {
                         type: "OTHER",
+                        active: true,
+                        name: "",
+                        lang: "",
+                        product: "",
+                        productList: []
+                    },
+                    editableInput: {
+                        id: 0,
+                        type: "",
                         active: true,
                         name: "",
                         lang: "",
@@ -114,6 +135,20 @@
             console.log(this.recipes)
         },
         methods: {
+            showModal(index) {
+                this.isModalVisible = true;
+                var obj = this.recipes.data.recipe[index];
+
+                this.recipes.editableInput.id = obj.id;
+                this.recipes.editableInput.type = obj.type;
+                this.recipes.editableInput.name = obj.name;
+                this.recipes.editableInput.lang = obj.lang.toLowerCase();
+                this.recipes.editableInput.productList = obj.productList;
+
+            },
+            closeModal() {
+                this.isModalVisible = false;
+            },
             sort: function (str) {
                 if (str === 'products' || str === 'actions') return;
                 const s = str.toLowerCase();

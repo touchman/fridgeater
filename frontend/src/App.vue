@@ -1,13 +1,11 @@
 <template id="app">
     <div>
         <Header/>
-        <!--<PersonList/>-->
         <RecipesModel/>
     </div>
 </template>
 
 <script>
-    //import PersonList from "./components/PersonList";
     import RecipesModel from "./components/RecipesModel";
     import Header from "./components/Header";
 
