@@ -41,7 +41,7 @@ public class RecipeController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity deleteRecipe(@RequestBody final RecipeToSaveDto recipeToSaveDto, @PathVariable final Long id) {
+    public ResponseEntity updateRecipe(@RequestBody final RecipeToSaveDto recipeToSaveDto, @PathVariable final Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(recipeService.updateRecipe(recipeToSaveDto, id));
     }
 }

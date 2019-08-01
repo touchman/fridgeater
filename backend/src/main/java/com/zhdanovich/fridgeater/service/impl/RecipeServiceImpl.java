@@ -6,6 +6,7 @@ import com.zhdanovich.fridgeater.dto.AllRecipesDto;
 import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
 import com.zhdanovich.fridgeater.entity.LanguageEntity;
 import com.zhdanovich.fridgeater.entity.RecipeEntity;
+import com.zhdanovich.fridgeater.repository.ProductRepository;
 import com.zhdanovich.fridgeater.repository.RecipeRepository;
 import com.zhdanovich.fridgeater.service.LanguageService;
 import com.zhdanovich.fridgeater.service.RecipeService;
@@ -22,6 +23,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final RecipesConverter recipesConverter;
+    private final ProductRepository productRepository;
     private final ProductConverter productConverter;
     private final LanguageService languageService;
 
@@ -57,6 +59,8 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public RecipeToSaveDto updateRecipe(final RecipeToSaveDto newRecipeDto, final Long id) {
+        /*recipeRepository.deleteById(id);
+        return addRecipe(newRecipeDto);*/
         final LanguageEntity language = languageService.getLanguage(newRecipeDto.getLang());
         final RecipeEntity recipeEntity1 = recipeRepository.findById(id).map(recipeEntity -> {
                     recipeEntity.setType(newRecipeDto.getType());
@@ -65,24 +69,15 @@ public class RecipeServiceImpl implements RecipeService {
                             recipeNameEntity.setName(newRecipeDto.getName());
                         }
                     });
-                    if (!newRecipeDto.getProductList().isEmpty()) {
-                        recipeEntity.getProductEntities().forEach(productEntity -> {
-                            productEntity.getNameEntity().forEach(productNameEntity -> {
-                                newRecipeDto.getProductList().stream()
-                                        .filter(productToSaveDto -> productToSaveDto.getId() != null)
-                                        .forEach(newProductName -> {
-                                            if (newProductName.getId().equals(productNameEntity.getId())) {
-                                                productNameEntity.setName(newProductName.getName());
-                                            }
-                                        });
-                            });
-                        });
-                        newRecipeDto.getProductList().stream().filter(productToSaveDto -> productToSaveDto.getId() == null)
-                                .forEach(productToSaveDto -> recipesConverter.addProduct(recipeEntity, productConverter.productToEntity(productToSaveDto, language)));
+                    recipeEntity.setActive(true);
 
-                    } else if (newRecipeDto.getProductList().isEmpty() && !recipeEntity.getProductEntities().isEmpty()) {
-                        recipeEntity.getProductEntities().forEach(productEntity -> recipesConverter.removeProduct(recipeEntity, productEntity));
-                    }
+                /*recipeEntity.getProductEntities().forEach(productEntity -> productEntity.getRecipeEntities().remove(recipeEntity));
+                recipeEntity.getProductEntities().clear();
+
+                newRecipeDto.getProductList().forEach(productToSaveDto -> {
+                    final Optional<ProductEntity> productEntity = productRepository.findByNameAndLang(productToSaveDto.getName(), language.getId());
+                    recipesConverter.addProduct(recipeEntity, productEntity.orElseGet(() -> productConverter.productToEntity(productToSaveDto, language)));
+                });*/
 
                     return recipeRepository.save(recipeEntity);
                 }

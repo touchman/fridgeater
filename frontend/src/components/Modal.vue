@@ -74,13 +74,14 @@
 
     export default {
         name: "Modal.vue",
-        props: ['id', 'type', 'name', 'lang', 'productList', 'product'],
+        props: ['index', 'id', 'type', 'name', 'lang', 'productList', 'product'],
         methods: {
             close() {
                 this.$emit('close');
             },
             addProduct: function () {
-                console.log(this);
+                alert("currently editing of products is not allowed!");
+                return;
                 if (this.$props.product !== '') {
                     this.$props.productList.push(
                         {
@@ -90,15 +91,13 @@
                         });
                     this.$props.product = ''
                 }
-                console.log(this.$props);
             },
             removeProduct: function (index) {
+                alert("currently editing of products is not allowed!");
+                return;
                 this.$props.productList.splice(index, 1);
             },
             edit: function () {
-                console.log("edit");
-                console.log(this.$props);
-
                 const str = JSON.stringify({
                     id: this.$props.id,
                     type: this.$props.type,
@@ -111,14 +110,15 @@
                 axios.put('/backend/recipe/' + this.$props.id, str, {headers: {'Content-Type': 'application/json'}})
                     .then((response) => {
                         console.log(response);
-
+                        this.$emit('toggle', response.data, this.$props.index);
                     })
                     .catch((error) => {
                         console.log(error);
                         alert("Error occurred: " + error)
                     });
 
-                this.close()
+                this.close();
+
             }
         }
     }

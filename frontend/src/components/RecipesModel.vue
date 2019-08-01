@@ -3,11 +3,13 @@
     <div id="app">
         <div class="container">
             <modal v-show="isModalVisible" @close="closeModal"
+                   v-bind:index="recipes.editableInput.index"
                    v-bind:id="recipes.editableInput.id"
                    v-bind:type="recipes.editableInput.type"
                    v-bind:name="recipes.editableInput.name"
                    v-bind:lang="recipes.editableInput.lang"
-                   v-bind:productList="recipes.editableInput.productList"/>
+                   v-bind:productList="recipes.editableInput.productList"
+                   @toggle="toggleModals"/>
             <table class="table-responsive bordered highlight centered hoverable z-depth-2" align="center">
                 <thead>
                 <tr>
@@ -44,7 +46,7 @@
                     </td>
                     <td>
                         <select v-model="recipes.input.lang" id="lang">
-                            <option value="">ru</option>
+                            <option>ru</option>
                             <option>en</option>
                         </select>
                         <label for="lang">Language</label>
@@ -114,6 +116,7 @@
                         productList: []
                     },
                     editableInput: {
+                        index: 0,
                         id: 0,
                         type: "",
                         active: true,
@@ -135,10 +138,14 @@
             console.log(this.recipes)
         },
         methods: {
+            toggleModals: function (data, index) {
+                this.recipes.data.recipe.splice(index, 1, data);
+            },
             showModal(index) {
                 this.isModalVisible = true;
                 var obj = this.recipes.data.recipe[index];
 
+                this.recipes.editableInput.index = index;
                 this.recipes.editableInput.id = obj.id;
                 this.recipes.editableInput.type = obj.type;
                 this.recipes.editableInput.name = obj.name;
@@ -152,7 +159,6 @@
             sort: function (str) {
                 if (str === 'products' || str === 'actions') return;
                 const s = str.toLowerCase();
-                console.log(s);
                 //if s == current sort, reverse
                 if (s === this.currentSort) {
                     this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
