@@ -2,10 +2,15 @@ package com.zhdanovich.fridgeater;
 
 import com.zhdanovich.fridgeater.dto.ProductToSaveDto;
 import com.zhdanovich.fridgeater.dto.RecipeToSaveDto;
-import com.zhdanovich.fridgeater.entity.*;
+import com.zhdanovich.fridgeater.entity.LanguageEntity;
+import com.zhdanovich.fridgeater.entity.ProductEntity;
+import com.zhdanovich.fridgeater.entity.ProductNameEntity;
+import com.zhdanovich.fridgeater.entity.RecipeEntity;
+import com.zhdanovich.fridgeater.entity.RecipeNameEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MockData {
@@ -88,6 +93,20 @@ public class MockData {
             return recipeEntity;
         }
 
+        public static RecipeEntity updatedRecipeEntity() {
+            final RecipeEntity recipeEntity = new RecipeEntity();
+            recipeEntity.setId(1L);
+            addName(recipeEntity, recipeNameEntity("pasta from dough and eggs", "slap the dough and crush the eggs", "en"));
+            recipeEntity.setActive(true);
+            recipeEntity.setType("PASTA");
+            addProduct(recipeEntity, productEntity(Collections.singletonList(
+                    productNameEntity("cucumber", "en"))));
+            addProduct(recipeEntity, productEntity(Collections.singletonList(
+                    productNameEntity("apple", "en"))));
+
+            return recipeEntity;
+        }
+
         private static void addProduct(final RecipeEntity recipeEntity, final ProductEntity productEntity) {
             recipeEntity.getProductEntities().add(productEntity);
             productEntity.getRecipeEntities().add(recipeEntity);
@@ -128,6 +147,20 @@ public class MockData {
             recipeToSaveDto.setActive(true);
             recipeToSaveDto.getProductList().add(productToSaveDto("cucumber", "en"));
             recipeToSaveDto.getProductList().add(productToSaveDto("apple", "en"));
+
+            return recipeToSaveDto;
+        }
+
+        public static RecipeToSaveDto recipeToUpdateDtoEN() {
+            final RecipeToSaveDto recipeToSaveDto = new RecipeToSaveDto();
+            recipeToSaveDto.setId(recipeDtoId++);
+            recipeToSaveDto.setName("pasta from dough and eggs");
+            recipeToSaveDto.setDescription("slap the dough and crush the eggs");
+            recipeToSaveDto.setLang("en");
+            recipeToSaveDto.setType("PASTA");
+            recipeToSaveDto.setActive(true);
+            recipeToSaveDto.getProductList().add(productToSaveDto("dough", "en"));
+            recipeToSaveDto.getProductList().add(productToSaveDto("eggs", "en"));
 
             return recipeToSaveDto;
         }

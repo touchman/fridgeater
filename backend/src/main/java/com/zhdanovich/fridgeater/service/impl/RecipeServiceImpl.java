@@ -71,13 +71,10 @@ public class RecipeServiceImpl implements RecipeService {
                     });
                     recipeEntity.setActive(true);
 
-                /*recipeEntity.getProductEntities().forEach(productEntity -> productEntity.getRecipeEntities().remove(recipeEntity));
-                recipeEntity.getProductEntities().clear();
+            recipeEntity.getProductEntities().forEach(productEntity -> productEntity.getRecipeEntities().remove(recipeEntity));
+            recipeEntity.getProductEntities().clear();
 
-                newRecipeDto.getProductList().forEach(productToSaveDto -> {
-                    final Optional<ProductEntity> productEntity = productRepository.findByNameAndLang(productToSaveDto.getName(), language.getId());
-                    recipesConverter.addProduct(recipeEntity, productEntity.orElseGet(() -> productConverter.productToEntity(productToSaveDto, language)));
-                });*/
+            recipesConverter.processProductDtos(newRecipeDto, language, recipeEntity, recipesConverter);
 
                     return recipeRepository.save(recipeEntity);
                 }

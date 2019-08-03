@@ -31,7 +31,7 @@ public class ProductConverter {
             dto.setActive(productEntity.isActive());
             dto.setLang(productNameEntity.getLang().getCode());
             dto.setName(productNameEntity.getName());
-            dto.setId(productNameEntity.getId());
+            dto.setId(productEntity.getId());
             return dto;
         }).collect(Collectors.toList());
     }

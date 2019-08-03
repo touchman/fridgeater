@@ -80,8 +80,6 @@
                 this.$emit('close');
             },
             addProduct: function () {
-                alert("currently editing of products is not allowed!");
-                return;
                 if (this.$props.product !== '') {
                     this.$props.productList.push(
                         {
@@ -93,8 +91,6 @@
                 }
             },
             removeProduct: function (index) {
-                alert("currently editing of products is not allowed!");
-                return;
                 this.$props.productList.splice(index, 1);
             },
             edit: function () {

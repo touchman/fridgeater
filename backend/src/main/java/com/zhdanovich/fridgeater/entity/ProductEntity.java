@@ -4,7 +4,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +34,7 @@ public class ProductEntity extends CommonFields {
     private List<RecipeEntity> recipeEntities = new ArrayList<>();
 
     @OneToMany(mappedBy = "product",
-            cascade = CascadeType.PERSIST,
+            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<ProductNameEntity> nameEntity = new ArrayList<>();
 }

@@ -32,12 +32,21 @@ public class RecipesConverter {
         recipeEntity.setType(recipeToSaveDto.getType());
         addName(recipeEntity, recipeNameEntity);
 
+        processProductDtos(recipeToSaveDto, lang, recipeEntity, this);
+
         recipeToSaveDto.getProductList().forEach(productToSaveDto -> {
             final Optional<ProductEntity> productEntity = productRepository.findByNameAndLang(productToSaveDto.getName(), lang.getId());
             addProduct(recipeEntity, productEntity.orElseGet(() -> productConverter.productToEntity(productToSaveDto, lang)));
         });
 
         return recipeEntity;
+    }
+
+    public void processProductDtos(final RecipeToSaveDto recipeToSaveDto, final LanguageEntity lang, final RecipeEntity recipeEntity, final RecipesConverter recipesConverter) {
+        recipeToSaveDto.getProductList().forEach(productToSaveDto -> {
+            final Optional<ProductEntity> productEntity = productRepository.findByNameAndLang(productToSaveDto.getName(), lang.getId());
+            recipesConverter.addProduct(recipeEntity, productEntity.orElseGet(() -> productConverter.productToEntity(productToSaveDto, lang)));
+        });
     }
 
     public List<RecipeToSaveDto> recipeEntityToDtoList(final RecipeEntity recipeEntity) {
