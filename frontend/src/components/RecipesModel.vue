@@ -52,20 +52,25 @@
                         <label for="lang">Language</label>
                     </td>
                     <td>
-                        <div class="input-field">
+                        <div class="input-field col s6">
                             <input placeholder="Product" v-model="recipes.input.product" id="product" type="text"
                                    v-on:keyup.enter="addProduct">
-                            <a href="#!" @click="addProduct" class="btn green darken-2"><i
-                                    class="material-icons">add</i></a>
                             <label for="product" @click="addProduct" style="cursor: pointer;">Product</label>
+                            <a href="#!" @click="addProduct">
+                                <i class="material-icons">add_box</i>
+                            </a>
                             <p v-for="(product, i) in recipes.input.productList" :key="i">
-                                {{product.name}}<a href="#!" @click="removeProduct(i)"
-                                                   class="btn green darken-2"><i
-                                    class="material-icons">remove</i></a>
+                                {{product.name}}
+                                <a href="#!" @click="removeProduct(i)" class="btn green darken-2">
+                                    <i class="material-icons">remove_circle_outline</i>
+                                </a>
                             </p>
                         </div>
                     </td>
-                    <td><a href="#!" @click="add" class="btn green darken-2"><i class="material-icons">add</i></a>
+                    <td>
+                        <a href="#!" @click="add" class="btn green darken-2">
+                            <i class="material-icons">save</i>
+                        </a>
                     </td>
                 </tr>
                 <tr v-for="(recipe, index) in sorted" :key="index">
@@ -82,7 +87,7 @@
                            @click="showModal(index)"><i class="material-icons">edit</i>
                         </a>
                         <a href="#!" class="btn waves-light red darken-2"
-                           @click="remove(index, recipe.id)"><i class="material-icons">remove</i>
+                           @click="remove(index, recipe.id)"><i class="material-icons">remove_circle_outline</i>
                         </a>
                     </td>
                 </tr>
@@ -96,6 +101,7 @@
     import "materialize-css/dist/js/materialize.min";
     import axios from 'axios';
     import modal from '../components/Modal';
+
 
     export default {
         components: {
@@ -111,7 +117,7 @@
                         type: "OTHER",
                         active: true,
                         name: "",
-                        lang: "",
+                        lang: "ru",
                         product: "",
                         productList: []
                     },

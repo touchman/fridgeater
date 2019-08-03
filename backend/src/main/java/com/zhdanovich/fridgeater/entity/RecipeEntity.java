@@ -7,6 +7,8 @@ import lombok.ToString;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -27,8 +29,11 @@ public class RecipeEntity extends CommonFields {
     @Column(name = "ACTIVE")
     private boolean active;
 
-    @ManyToMany(mappedBy = "recipeEntities",
-            cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(
+            name = "RECIPE_PRODUCT",
+            joinColumns = @JoinColumn(name = "RECIPE_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "ID"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<ProductEntity> productEntities = new HashSet<>();

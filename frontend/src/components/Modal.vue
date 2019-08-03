@@ -5,17 +5,12 @@
                  role="dialog"
                  aria-labelledby="modalTitle"
                  aria-describedby="modalDescription">
-                <header
-                        class="modal-header"
-                        id="modalTitle">
+                <header id="modalTitle">
                     <slot name="header" style="position: center">
-                        Change recipe here
-                        <button
-                                type="button"
-                                class="btn-close"
-                                @click="close"
-                                aria-label="Close modal">
-                            x
+                        <button type="button" @click="close" aria-label="Close modal" style="float: right;">
+                            <i class="material-icons">
+                                cancel
+                            </i>
                         </button>
                     </slot>
                 </header>
@@ -51,17 +46,19 @@
                     <div class="input-field col-sm-4" style="min-width: 100%; margin: 1px">
                         <input placeholder="Product" v-model="product" id="product" type="text"
                                v-on:keyup.enter="addProduct">
-                        <a href="#!" @click="addProduct" class="btn green darken-2"><i
-                                class="material-icons">add</i></a>
+                        <a href="#!" @click="addProduct" class="btn green darken-2">
+                            <i class="material-icons">add_circle</i>
+                        </a>
                         <label for="product" @click="addProduct" style="cursor: pointer;">Product</label>
                         <p v-for="(product, i) in productList" :key="i">
-                            {{product.name}}<a href="#!" @click="removeProduct(i)"
-                                               class="btn green darken-2"><i
-                                class="material-icons">remove</i></a>
+                            {{product.name}}
+                            <a href="#!" @click="removeProduct(i)" class="btn green darken-2" style="float: right;">
+                                <i class="material-icons">remove_circle_outline</i>
+                            </a>
                         </p>
                     </div>
                     <button type="button" class="btn-edit" @click="edit" style="margin: 1px">
-                        Edit
+                        <i class="material-icons">save_alt</i>
                     </button>
                 </div>
             </div>
