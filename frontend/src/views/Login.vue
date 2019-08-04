@@ -30,7 +30,10 @@
                 this.$store.dispatch('login', {
                     email,
                     password
-                }).then(() => this.$router.push('/recipes')).catch(err => console.log(err))
+                }).then(() => this.$router.push('/recipes')).catch(err => {
+                    console.log(err)
+                    alert("incorrect login or password")
+                })
             }
         }
     }

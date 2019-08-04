@@ -13,13 +13,25 @@
             <table class="table-responsive bordered highlight centered hoverable z-depth-2" align="center">
                 <thead>
                 <tr>
-                    <th v-for="column in recipes.columns" @click="sort(column)" style="cursor: pointer;">
-                        {{column}}
+                    <th @click="sort('type')" style="cursor: pointer;">
+                        Type
+                    </th>
+                    <th @click="sort('name')" style="cursor: pointer;">
+                        Name
+                    </th>
+                    <th @click="sort('lang')" style="cursor: pointer;">
+                        Language
+                    </th>
+                    <th>
+                        Products
+                    </th>
+                    <th v-if="isLoggedIn">
+                        Actions
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr v-if="isLoggedIn">
                     <td>
                         <select v-model="recipes.input.type" id="type">
                             <option>OTHER</option>
@@ -82,7 +94,7 @@
                             {{product.name}}
                         </p>
                     </td>
-                    <td style="width: 18%;">
+                    <td style="width: 18%;" v-if="isLoggedIn">
                         <a href="#!" class="btn waves-light red darken-2"
                            @click="showModal(index)"><i class="material-icons">edit</i>
                         </a>
@@ -112,7 +124,6 @@
                 isModalVisible: false,
                 recipes: {
                     data: [],
-                    columns: ['Type', 'Name', 'Language', 'Products', 'Actions'],
                     input: {
                         type: "OTHER",
                         active: true,
@@ -137,11 +148,10 @@
             }
         },
         created() {
-            axios.get(`/backend/recipe/recipes`)
+            axios({url: '/backend/recipe/recipes', method: 'GET'})
                 .then(response => {
                     this.recipes.data = response.data;
                 });
-            console.log(this.recipes)
         },
         methods: {
             toggleModals: function (data, index) {
@@ -180,10 +190,8 @@
                     lang: this.recipes.input.lang,
                     productList: this.recipes.input.productList
                 });
-
-                axios.post('/backend/recipe/', str, {headers: {'Content-Type': 'application/json'}})
+                axios({url: '/backend/recipe/', data: str, method: 'POST'})
                     .then((response) => {
-                        console.log(response);
                         this.recipes.data.recipe.push({
                             id: response.data.id,
                             type: response.data.type,
@@ -222,7 +230,7 @@
                 if (confirm("Do you really want to delete this item?")) {
                     this.recipes.data.recipe.splice(index, 1);
 
-                    axios.delete('/backend/recipe/' + recipeId)
+                    axios({url: '/backend/recipe/' + recipeId, method: 'DELETE'})
                         .then((response) => {
                             console.log(response);
                         })
@@ -245,6 +253,9 @@
                     if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
                     return 0;
                 });
+            },
+            isLoggedIn: function () {
+                return this.$store.getters.isLoggedIn
             }
         }
     }

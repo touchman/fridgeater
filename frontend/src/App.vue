@@ -3,9 +3,9 @@
         <div id="nav">
             <router-link to="/">Home |</router-link>
             <router-link to="/about">About |</router-link>
-            <router-link to="/register" v-if="!isLoggedIn">Register |</router-link>
+            <!--<router-link to="/register" v-if="!isLoggedIn">Register |</router-link>-->
             <router-link to="/login" v-if="!isLoggedIn">Login |</router-link>
-            <router-link to="/recipes" v-if="isLoggedIn">Recipes |</router-link>
+            <router-link to="/recipes">Recipes |</router-link>
             <span style="cursor: pointer" v-if="isLoggedIn"><a @click="logout">Logout</a></span>
         </div>
         <router-view/>

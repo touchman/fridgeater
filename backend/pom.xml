@@ -17,6 +17,7 @@
         <java.version>1.8</java.version>
         <commons-lang.version>3.0</commons-lang.version>
         <selenium.version>3.141.59</selenium.version>
+        <jjwt.version>0.9.0</jjwt.version>
     </properties>
 
     <dependencies>
@@ -31,6 +32,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>

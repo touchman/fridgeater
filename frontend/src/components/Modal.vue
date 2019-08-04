@@ -100,7 +100,7 @@
                     productList: this.$props.productList
                 });
 
-                axios.put('/backend/recipe/' + this.$props.id, str, {headers: {'Content-Type': 'application/json'}})
+                axios({url: '/backend/recipe/' + this.$props.id, data: str, method: 'PUT'})
                     .then((response) => {
                         console.log(response);
                         this.$emit('toggle', response.data, this.$props.index);
